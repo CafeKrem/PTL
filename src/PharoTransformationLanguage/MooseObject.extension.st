@@ -12,7 +12,7 @@ MooseObject >> MTLequalsTo: aValue [
 		allSatisfy:
 			[ :each | (each read: self) = ((aValue class slotNamed: each name) read: aValue) ])
 		ifFalse: [ ^ false ].
-	(self children
+	(self children   
 		allSatisfy: [ :each | 
 			aValue children
 				detect: [ :valueChild | each MTLequalsTo: valueChild ]
