@@ -24,11 +24,7 @@ PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 		  ifNotNil: [ 
 			  previous ifNotNil: [ 
 				  (previous isEllipsis or: [ previous isJoker ]) ifTrue: [ 
-					  self flag: #replaceByHasNext.
-					  1 haltIf: [ (aValue isKindOf: OrderedCollection) not ].
-					  ^ next
-						    match: ("OrderedCollection newFrom:" aValue allButFirst)
-						    withContext: aContext ] ].
+					  ^ next hasMatch: aValue allButFirst withContext: aContext ] ].
 			  true ]
 ]
 
