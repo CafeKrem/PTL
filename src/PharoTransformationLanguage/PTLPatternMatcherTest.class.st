@@ -505,8 +505,10 @@ PTLPatternMatcherTest >> testMatchTwoLastStatementOfASequence [
 		            (PTLJokerMatcher new named: #beforebefore50).
 		            (PTLJokerMatcher new named: #before50).
 		            (FASTExpressionStatement suchAs: { 50 }) } asMatcher.
+	
 	model := self productFASTPharo:
 		         PTLPatternMatcherTest >> #methodTestEllipsisNode3.
+	1 halt.
 	matchResult := pattern match: model.
 	self assert: matchResult isMatch.
 	self assert: (matchResult at: #lastlast) expression value equals: 50.
