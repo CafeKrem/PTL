@@ -13,5 +13,6 @@ BaselineOfPTL >> baseline: spec [
 
 		spec
 			baseline: 'FASTPharo'
-			with: [ spec repository: 'github://moosetechnology/FAST-Pharo/src' ] ]
+			with: [ 
+			spec repository: 'github://moosetechnology/FAST-Pharo:master/src' ] ]
 ]
