@@ -17,11 +17,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      PROJECT_NAME: Moose9
     strategy:
       matrix:
-        smalltalk: [ Moose64-9.0 . Moose64-8.0 ]
+        smalltalk: [ Moose64-9.0 , Moose64-8.0 ]
     name: ${{ matrix.smalltalk }}
     steps:
       - uses: actions/checkout@v2
