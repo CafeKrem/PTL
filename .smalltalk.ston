@@ -9,10 +9,9 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    
      #coverage : {
        #packages : [ 'PharoTransformationLanguage' ],
-        #format : #coveralls
+        #format : #lcov
         }
   }
 }
