@@ -12,8 +12,9 @@ SmalltalkCISpec {
     #include : {
       #packages : [ 'PharoTransformationLanguage' ]
      }
-      #coverage : {
-        #packages : [ 'PharoTransformationLanguage' ],
+     #coverage : {
+       #packages : [ 'PharoTransformationLanguage' ],
         #format : #coveralls
+        }
   }
 }
