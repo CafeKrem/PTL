@@ -1,4 +1,4 @@
-# PTL  ![https://github.com/CafeKrem/PTL/workflows/CI/badge.svg](https://github.com/CafeKrem/PTL/workflows/CI/badge.svg)[![Coverage Status](https://coveralls.io/repos/github/CafeKrem/PTL/badge.svg?branch=master)](https://coveralls.io/github/CafeKrem/PTL?branch=master)
+# PTL  ![https://github.com/CafeKrem/PTL/workflows/CI/badge.svg](https://github.com/CafeKrem/PTL/workflows/CI/badge.svg)[![Coverage Status](https://coveralls.io/repos/github/CafeKrem/PTL/badge.svg?branch=main)](https://coveralls.io/github/CafeKrem/PTL?branch=main)
  Pharo transformation Language is a transformation model language like ALT tefkat.
 
 ## state of the project , in developement
