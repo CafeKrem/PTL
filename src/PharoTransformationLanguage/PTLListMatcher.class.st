@@ -11,7 +11,7 @@ Class {
 PTLListMatcher >> match: aCollection withContext: aContext [
 
 	| isMatched matcherTmp tmpCollection |
-	tmpCollection := aCollection copy.
+	tmpCollection := aCollection copy asOrderedCollection.
 	matcherTmp := matcher.
 	isMatched := matcherTmp match: tmpCollection withContext: aContext.
 	[ isMatched and: [ matcherTmp hasNext ] ] whileTrue: [ 
@@ -25,15 +25,4 @@ PTLListMatcher >> match: aCollection withContext: aContext [
 { #category : #accessor }
 PTLListMatcher >> matcher: aMatcher [
 	matcher := aMatcher
-]
-
-{ #category : #'private-running' }
-PTLListMatcher >> templateMatch: aCollection withContext: aContext [
-	| isMatched |
-	1 halt.
-	isMatched := matcher match: aCollection withContext: aContext.
-	[ isMatched and: [ next hasNext ] ]
-		whileTrue: [ isMatched := matcher next match: aCollection withContext: aContext.
-			matcher := matcher next ].
-	^ isMatched
 ]

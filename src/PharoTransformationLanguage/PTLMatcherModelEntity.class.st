@@ -29,9 +29,12 @@ PTLMatcherModelEntity >> asSubPatternWrapper [
 
 { #category : #util }
 PTLMatcherModelEntity >> firstElementOf: aCollection [
-
-	aCollection isString ifTrue: [ ^ aCollection ].
-	aCollection isCollection ifTrue: [ ^ aCollection first ].
+	aCollection isString
+		ifTrue: [ ^ aCollection ].
+	aCollection isCollection
+		ifTrue: [ aCollection first isCharacter
+				ifTrue: [ ^ aCollection ]
+				ifFalse: [ ^ aCollection first ] ].
 	^ aCollection
 ]
 
@@ -39,9 +42,6 @@ PTLMatcherModelEntity >> firstElementOf: aCollection [
 PTLMatcherModelEntity >> hasMatch: aValue withContext: aContext [
 	"return boolean , true if I can match with my argument aValue else false."
 	^ self subclassResponsibility.
-	"^ self
-		templateMatch: (self firstElementOf: aCollection)
-		withContext: aContext"
 ]
 
 { #category : #'private-running' }
@@ -65,31 +65,24 @@ PTLMatcherModelEntity >> match: aValue [
 	| matcherResult |
 	matcherResult := PTLMatcherResult new.
 	matcherResult isMatch: (self
-			 match: (OrderedCollection newFrom: (aValue isString
-						   ifTrue: [ { aValue } ]
-						   ifFalse: [ aValue asCollection ]))
+			 match: aValue asOrderedCollection
 			 withContext: matcherResult).
 	^ matcherResult
 ]
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> match: aCollection withContext: aContext [
-
 	| aValue |
 	aValue := self firstElementOf: aCollection.
 	^ (self hasMatch: aValue withContext: aContext)
-		  ifTrue: [ 
-			  aValue isString
-				  ifTrue: [ 
-					  aCollection isString
-						  ifTrue: [ 
-						  aCollection become: (aValue allButFirst: self value size) ]
-						  ifFalse: [ 
-						  aCollection at: 1 put: (aValue allButFirst: self value size) ] ]
-				  ifFalse: [ 
-				  self save: (self pop: aCollection) inContext: aContext ].
-			  true ]
-		  ifFalse: [ false ]
+		ifTrue: [ aCollection isCollection
+				ifTrue: [ aCollection first isCharacter
+						ifTrue: [ aCollection removeAll: self value.
+							self flag: #moveIt ]
+						ifFalse: [ self save: (self pop: aCollection) inContext: aContext ] ]
+				ifFalse: [ self save: (self pop: aCollection) inContext: aContext ].
+			true ]
+		ifFalse: [ false ]
 ]
 
 { #category : #'API-patternDSL' }
@@ -109,14 +102,9 @@ PTLMatcherModelEntity >> next: aMatcher [
 
 { #category : #util }
 PTLMatcherModelEntity >> pop: aCollection [
-
 	^ aCollection isCollection
-		  ifTrue: [ 
-			  aCollection removeFirst
-			  "(aCollection isKindOf: LinkedList)
-				ifTrue: [ aCollection removeFirst ]
-				ifFalse: [ aCollection  removeFirst ]" ]
-		  ifFalse: [ aCollection ]
+		ifTrue: [ aCollection removeFirst ]
+		ifFalse: [ aCollection ]
 ]
 
 { #category : #accessor }
@@ -126,7 +114,6 @@ PTLMatcherModelEntity >> previous: aMatcher [
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> save: aCollection inContext: aContext [
-
 	^ savedSelector ifNotNil: [ 
 		  aContext at: savedSelector put: aCollection ]
 ]

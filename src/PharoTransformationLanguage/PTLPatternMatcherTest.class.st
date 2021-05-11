@@ -13,7 +13,7 @@ PTLPatternMatcherTest >> methodRBWhileTrue [
 	[ 
 	1.
 	2.  
-	3. 
+	3.  
 	4 = 5 ] whileTrue: [ 6 ]   
 ]
 
@@ -554,6 +554,7 @@ PTLPatternMatcherTest >> testModelReferenceWithMultipleSubPattern [
 PTLPatternMatcherTest >> testRBAST [
 
 	| pattern model matchResult patternWithoutParenthesis |
+	
 	pattern := { (RBSequenceNode suchAs:
 		            { (#statements -> (RBMessageNode suchAs: { 
 				              (#receiver -> (RBBlockNode suchAs:
@@ -562,7 +563,7 @@ PTLPatternMatcherTest >> testRBAST [
 								                   ($* named: #a).
 								                   (PTLJokerMatcher named: #cond) }) })) })).
 				              (#selector
-				               -> (RBSelectorNode suchAs: { 'whileTrue:' })).
+				               -> ((Smalltalk version = 'Pharo8.0.0') ifTrue:  [ 'whileTrue:']ifFalse: [RBSelectorNode suchAs: { 'whileTrue:' }])).
 				              (#arguments -> (RBBlockNode suchAs:
 					                { (#body -> (RBSequenceNode named: #whileBlock)) })) })) }) }
 		           asMatcher.
@@ -574,8 +575,7 @@ PTLPatternMatcherTest >> testRBAST [
 							                                 suchAs: { (#statements -> { 
 									                                  ($* named: #a).
 									                                  (PTLJokerMatcher named: #cond) }) }) }).
-					                               (#selector -> RBSelectorNode 
-						                                suchAs: { 'whileTrue:' }).
+					                               (#selector ->((Smalltalk version = 'Pharo8.0.0') ifTrue:  [ 'whileTrue:']ifFalse: [RBSelectorNode suchAs: { 'whileTrue:' }]) ).
 					                               (#arguments -> RBBlockNode 
 						                                suchAs:
 						                                { (#body -> RBSequenceNode 
@@ -681,7 +681,7 @@ PTLPatternMatcherTest >> testStringCompositeMatcher2 [
 			               -> (FASTPharoSelector suchAs: { (#name -> { 
 						                 'set'.
 						                 ($* named: #x) }) })) })) }) } asMatcher.
-
+	
 	model := self productFASTPharo:
 		         PTLPatternMatcherTest >> #methodTestCompose1.
 	matchResult := pattern match: model.
