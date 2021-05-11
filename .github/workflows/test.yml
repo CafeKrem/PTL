@@ -32,7 +32,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         timeout-minutes: 15
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@v1.1.1
+      - run: echo "::set-env name=SCI_COVERAGE_FILE_LOCATION::${HOME}/.smalltalkCI/_builds/coveralls_results.json"
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1.0.6
         with:
-          github-token: ${{ github.token }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ${{ env.SCI_COVERAGE_FILE_LOCATION }}
