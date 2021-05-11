@@ -32,9 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         timeout-minutes: 15
-      - uses: codecov/codecov-action@v1
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.1
         with:
-          # This name should be unique to identify the build job
-          name: ${{matrix.os}}-${{matrix.smalltalk}}
-          # Optional: Defaults to false
-          fail_ci_if_error: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
