@@ -3,7 +3,9 @@ SmalltalkCISpec {
     SCIMetacelloLoadSpec {
       #baseline : 'PTL',
       #directory : 'src',
-       #platforms : [ #pharo]
+      #platforms : [ #pharo],
+      #onConflict : #useIncoming,                         // When there is a conflict between loaded sources and incoming sources (can be #useIncoming|#useLoaded)
+      #onUpgrade : #useIncoming,
     }
   ],
   #testing : {
