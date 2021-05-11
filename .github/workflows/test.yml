@@ -28,6 +28,8 @@ jobs:
         with:
           smalltalk-image: ${{ matrix.smalltalk }}
       - run: smalltalkci -s ${{ steps.smalltalkci.outputs.smalltalk-image }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         timeout-minutes: 15
       - name: Coveralls GitHub Action
