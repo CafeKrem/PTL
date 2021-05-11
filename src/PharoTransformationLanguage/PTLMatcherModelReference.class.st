@@ -28,20 +28,14 @@ PTLMatcherModelReference >> configuration: aCollection [
 
 { #category : #'as yet unclassified' }
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
-
-	"^ self
-		templateMatch: (self firstElementOf: aCollection)
-		withContext: aContext"
-
 	| value |
 	value := self firstElementOf: aValue.
 	^ (value isKindOf: modelDescription)
-		  ifTrue: [ configuration match: value withContext: aContext ]
-		  ifFalse: [ false ]
+		ifTrue: [ configuration match: value withContext: aContext ]
+		ifFalse: [ false ]
 ]
 
 { #category : #accessor }
 PTLMatcherModelReference >> modelDescription: aClass [
-
 	modelDescription := aClass
 ]

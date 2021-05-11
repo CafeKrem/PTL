@@ -6,12 +6,13 @@ Class {
 
 { #category : #'private-running' }
 PTLMatcherString >> hasMatch: aValue withContext: aContext [
-
-	^ (super hasMatch: aValue withContext: aContext) or: [ 
-		  (aValue isString or: [ aValue isCharacter ])
-			  ifTrue: [ 
-			  aValue asString
-				  beginsWithEmpty: value asString
-				  caseSensitive: true ]
-			  ifFalse: [ false ] ]
+	^ (super hasMatch: aValue withContext: aContext)
+		or: [ (aValue isString or: [ aValue isCharacter ])
+				ifTrue:
+					[ aValue asString beginsWithEmpty: value asString caseSensitive: true ]
+				ifFalse: [ aValue isCollection
+						ifTrue: [ ('' join: aValue)
+								beginsWithEmpty: value asString
+								caseSensitive: true ]
+						ifFalse: [ false ] ] ]
 ]

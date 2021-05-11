@@ -15,20 +15,13 @@ PTLMatcherSubPatternWrapper >> asSubPatternWrapper [
 
 { #category : #actions }
 PTLMatcherSubPatternWrapper >> convert: attributeTmp [
-
-	attributeTmp isString ifTrue: [ 
-		attributeTmp size == 1
-			ifTrue: [ ^ OrderedCollection newFrom: attributeTmp ]
-			ifFalse: [ ^ attributeTmp ] ].
+	attributeTmp isString
+		ifTrue: [ attributeTmp size == 1
+				ifTrue: [ ^ OrderedCollection newFrom: attributeTmp ]
+				ifFalse: [ ^ attributeTmp asOrderedCollection ] ].
 	attributeTmp isCollection not
 		ifTrue: [ ^ attributeTmp ]
 		ifFalse: [ ^ OrderedCollection newFrom: attributeTmp ]
-	"(attributeTmp isString or: [ attributeTmp isCollection not ])
-		ifTrue: [ 
-			attributeTmp size == 1
-				ifTrue: [ ^ OrderedCollection newFrom: attributeTmp ]
-				ifFalse: [ ^ attributeTmp ] ]
-		ifFalse: [ ^ OrderedCollection newFrom: attributeTmp ]"
 ]
 
 { #category : #'private-running' }
