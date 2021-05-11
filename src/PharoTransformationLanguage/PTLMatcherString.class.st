@@ -8,7 +8,10 @@ Class {
 PTLMatcherString >> hasMatch: aValue withContext: aContext [
 
 	^ (super hasMatch: aValue withContext: aContext) or: [ 
-		  aValue isString
-			  ifTrue: [ aValue beginsWithEmpty: value caseSensitive: true ]
+		  (aValue isString or: [ aValue isCharacter ])
+			  ifTrue: [ 
+			  aValue asString
+				  beginsWithEmpty: value asString
+				  caseSensitive: true ]
 			  ifFalse: [ false ] ]
 ]

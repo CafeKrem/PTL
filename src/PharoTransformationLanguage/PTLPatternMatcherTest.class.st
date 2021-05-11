@@ -14,7 +14,7 @@ PTLPatternMatcherTest >> methodRBWhileTrue [
 	1.
 	2.  
 	3. 
-	4 = 5 ] whileTrue: [ 6 ]  
+	4 = 5 ] whileTrue: [ 6 ]   
 ]
 
 { #category : #'as yet unclassified' }
@@ -695,4 +695,17 @@ PTLPatternMatcherTest >> testStringMatcher [
 	pattern := 'klm' asMatcher.
 	self assert: (pattern match: 'klm') isMatch.
 	self deny: (pattern match: 'patrick') isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testStringMatcher2 [
+
+	| pattern a b x |
+	pattern := RBVariableNode suchAs: { (#name -> #x) } asMatcher.
+
+	a := pattern match: ([ x ] sourceNode statements at: 1).
+	b := pattern match: ([ x ] sourceNode statements at: 1).
+
+	self assert: a isMatch.
+	self assert: b isMatch
 ]

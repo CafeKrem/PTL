@@ -14,5 +14,5 @@ Symbol >> asMatcher [
 			  ifEmpty: [ PTLJokerMatcher new ]
 			  ifNotEmpty: [ :name | PTLJokerMatcher new named: name ] ].
 	first = $_ ifTrue: [ ^ PTLJokerMatcher new ].
-	1 halt
+	^ super asMatcher
 ]
