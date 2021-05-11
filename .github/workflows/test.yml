@@ -32,9 +32,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         timeout-minutes: 15
-      - run: echo "::set-env name=SCI_COVERAGE_FILE_LOCATION::${HOME}/.smalltalkCI/_builds/coveralls_results.json"
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1.0.6
+      - uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ${{ env.SCI_COVERAGE_FILE_LOCATION }}
+          # This name should be unique to identify the build job
+          name: ${{matrix.os}}-${{matrix.smalltalk}}
+          # Optional: Defaults to false
+          fail_ci_if_error: true
