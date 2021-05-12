@@ -41,3 +41,17 @@ PTLMatcherResult >> isMatch [
 PTLMatcherResult >> isMatch: aBoolean [ 
 	isMatch := aBoolean
 ]
+
+{ #category : #test }
+PTLMatcherResult >> isPartialMatch [
+	^ isMatch not and: [ context isNotEmpty ]
+]
+
+{ #category : #accessor }
+PTLMatcherResult >> printString [
+	^ '{1} ({2}, {3})'
+		format:
+			{super printString.
+			isMatch asString.
+			context asString}
+]
