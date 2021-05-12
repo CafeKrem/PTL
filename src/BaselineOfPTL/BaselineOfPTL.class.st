@@ -8,11 +8,5 @@ Class {
 BaselineOfPTL >> baseline: spec [
 
 	<baseline>
-	spec for: #common do: [ 
-		spec package: 'PharoTransformationLanguage'.
-
-		spec
-			baseline: 'FASTPharo'
-			with: [ 
-			spec repository: 'github://moosetechnology/FAST-Pharo:master/src' ] ]
+	spec for: #common do: [ spec package: 'PharoTransformationLanguage' ]
 ]

@@ -182,17 +182,18 @@ PTLPatternMatcherTest >> methodTestSequenceIncomplete [
 
 { #category : #tests }
 PTLPatternMatcherTest >> productFASTPharo: aCompiledMethod [
-	^ (FASTSmalltalkImporterVisitor new
+	^ aCompiledMethod ast body
+	"(FASTSmalltalkImporterVisitor new
 		runWithSource: aCompiledMethod sourceCode) statements
-		asOrderedCollection sorted: [ :a :b | a startPos < b startPos ]
+		asOrderedCollection sorted: [ :a :b | a startPos < b startPos ]"
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testBinOp [
 
 	| pattern model model1 matcherResult |
-	pattern := { (FASTExpressionStatement suchAs:
-		            { (#expression -> (FASTPharoMessageSend suchAs: { 
+	pattern := { (RBSequenceNode suchAs:
+		            { (#statements -> (RBMessageNode suchAs: { 
 				              (#receiver -> (PTLJokerMatcher new named: #x)).
 				              (#selector -> '+').
 				              (#arguments -> (PTLJokerMatcher new named: #x)) })) }) }
@@ -211,20 +212,18 @@ PTLPatternMatcherTest >> testBinOp [
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
-	pattern := { 
-		           ($* named: #ellipsis).
-		           (FASTExpressionStatement suchAs: { 100 }) } asMatcher.
-	pattern1 := { 
-		            (PTLEllipsisMatcher new named: #ellipsis).
-		            (FASTExpressionStatement suchAs: { 100 }) } asMatcher.
-	patternShortcut := { 
-		                   #'*ellipsis'.
-		                   (FASTExpressionStatement suchAs: { 100 }) }
+	pattern := (RBSequenceNode suchAs: { (#statements -> { 
+			             ($* named: #ellipsis).
+			             100 }) }) asMatcher.
+	pattern1 := (RBSequenceNode suchAs: { (#statements -> { 
+			              (PTLEllipsisMatcher new named: #ellipsis).
+			              100 }) }) asMatcher.
+	patternShortcut := (RBSequenceNode suchAs:
+		                    { (#statements -> { #'*ellipsis'. 100 }) })
 		                   asMatcher.
-	pattern1Shortcut := { 
-		                    #'*ellipsis'.
-		                    (FASTExpressionStatement suchAs: { 100 }) }
-		                    asMatcher.
+	pattern1Shortcut := RBSequenceNode suchAs:
+		                    #statements
+		                    -> { { #'*ellipsis'. 100 } } asMatcher.
 	model0 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestEllipsisNode.
 	model1 := self productFASTPharo:
@@ -248,14 +247,12 @@ PTLPatternMatcherTest >> testEllipsisMatcher [
 	self assert: matchResult isMatch.
 	self
 		assertCollection:
-			((matchResult context at: #ellipsis) collect: [ :each | 
-				 each expression value ])
+		((matchResult context at: #ellipsis) collect: [ :each | each value ])
 		hasSameElements: { 'klm'. 'jiop'. 'roger' }.
 	self assert: matchResult1 isMatch.
 	self
 		assertCollection:
-			((matchResult1 context at: #ellipsis) collect: [ :each | 
-				 each expression value ])
+		((matchResult1 context at: #ellipsis) collect: [ :each | each value ])
 		hasSameElements: { 'klm'. 'jiop'. 'roger' }.
 	self flag: 'extract it to another test ? '.
 	"shortcut test"
@@ -276,39 +273,37 @@ PTLPatternMatcherTest >> testEllipsisMatcher [
 	self assert: matchResult isMatch.
 	self
 		assertCollection:
-			((matchResult context at: #ellipsis) collect: [ :each | 
-				 each expression value ])
+		((matchResult context at: #ellipsis) collect: [ :each | each value ])
 		hasSameElements: { 'klm'. 'jiop'. 'roger' }.
 	self assert: matchResult1 isMatch.
 	self
 		assertCollection:
-			((matchResult1 context at: #ellipsis) collect: [ :each | 
-				 each expression value ])
+		((matchResult1 context at: #ellipsis) collect: [ :each | each value ])
 		hasSameElements: { 'klm'. 'jiop'. 'roger' }
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher2 [
+
 	| pattern model matcherResult |
-	pattern := {(PTLJokerMatcher new named: #joker).
-	($* named: #before100).
-	(FASTExpressionStatement suchAs: {100}).
-	($* named: #after100)} asMatcher.
-	model := self
-		productFASTPharo: PTLPatternMatcherTest >> #methodTestEllipsisNode3.
+	pattern := RBSequenceNode suchAs: { (#statements -> { 
+			            (PTLJokerMatcher new named: #joker).
+			            ($* named: #before100).
+			            100.
+			            ($* named: #after100) }) } asMatcher.
+	model := self productFASTPharo:
+		         PTLPatternMatcherTest >> #methodTestEllipsisNode3.
 	matcherResult := pattern match: model.
 	self assert: matcherResult isMatch.
 	self
 		assertCollection:
-			((matcherResult at: #before100)
-				collect: [ :each | each expression value ])
-		hasSameElements: {2 . 3 . 4 . 6}.
+		((matcherResult at: #before100) collect: [ :each | each value ])
+		hasSameElements: { 2. 3. 4. 6 }.
 	self
 		assertCollection:
-			((matcherResult at: #after100)
-				collect: [ :each | each expression value ])
-		hasSameElements: {42 . 50 . 26}.
-	self assert: (matcherResult at: #joker) expression value equals: 1
+		((matcherResult at: #after100) collect: [ :each | each value ])
+		hasSameElements: { 42. 50. 26 }.
+	self assert: (matcherResult at: #joker) value equals: 1
 ]
 
 { #category : #tests }
@@ -323,63 +318,56 @@ PTLPatternMatcherTest >> testIntegerMatcher [
 PTLPatternMatcherTest >> testJokerMatcher [
 
 	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut |
-	pattern := { 
-		           (FASTExpressionStatement suchAs: { 1 }).
-		           (PTLJokerMatcher new named: #joker) } asMatcher.
-	pattern1 := { 
-		            (PTLJokerMatcher new named: #joker).
-		            (FASTExpressionStatement suchAs: { 100 }) } asMatcher.
-	pattern2 := { 
-		            (PTLJokerMatcher new named: #first).
-		            $*.
-		            (PTLJokerMatcher new named: #last) } asMatcher.
-	pattern3 := { 
-		            PTLJokerMatcher new.
-		            (FASTExpressionStatement suchAs: { 2 }).
-		            (FASTExpressionStatement suchAs: { 99 }) } asMatcher.
-	patternShorcut := { 
-		                  (FASTExpressionStatement suchAs: { 1 }).
-		                  #'@joker' } asMatcher.
-	pattern1Shorcut := { 
-		                   #'@joker'.
-		                   (FASTExpressionStatement suchAs: { 100 }) }
-		                   asMatcher.
-	pattern2Shorcut := { #'@first'. #*. #'@last' } asMatcher.
-	pattern3Shorcut := { 
-		                   #_.
-		                   (FASTExpressionStatement suchAs: { 2 }).
-		                   (FASTExpressionStatement suchAs: { 99 }) }
-		                   asMatcher.
+	pattern := RBSequenceNode suchAs: { (#statements -> { 
+			            1.
+			            (PTLJokerMatcher new named: #joker) }) } asMatcher.
+	pattern1 := RBSequenceNode suchAs: { (#statements -> { 
+			             (PTLJokerMatcher new named: #joker).
+			             100 }) } asMatcher.
+	pattern2 := RBSequenceNode suchAs: { (#statements -> { 
+			             (PTLJokerMatcher new named: #first).
+			             $*.
+			             (PTLJokerMatcher new named: #last) }) } asMatcher.
+	pattern3 := RBSequenceNode suchAs: { (#statements -> { 
+			             PTLJokerMatcher new.
+			             2.
+			             99 }) } asMatcher.
+	patternShorcut := RBSequenceNode suchAs:
+		                  { (#statements -> { 1. #'@joker' }) } asMatcher.
+	pattern1Shorcut := RBSequenceNode suchAs:
+		                   { (#statements -> { #'@joker'. 100 }) } asMatcher.
+	pattern2Shorcut := RBSequenceNode suchAs:
+		                   { (#statements -> { #'@first'. #*. #'@last' }) }
+			                   asMatcher.
+	pattern3Shorcut := RBSequenceNode suchAs:
+		                   { (#statements -> { #_. 2. 99 }) } asMatcher.
 	model := self productFASTPharo:
 		         PTLPatternMatcherTest >> #methodTestJoker.
 	model1 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestJoker2.
 	matchResult := pattern match: model.
 	self assert: matchResult isMatch.
-	self assert: (matchResult at: #joker) expression value equals: 2.
+	self assert: (matchResult at: #joker) value equals: 2.
 	self deny: (pattern1 match: model) isMatch.
 	self deny: (pattern3 match: model) isMatch.
 	matchResult2 := pattern2 match: model.
-	self assert: (matchResult2 at: #first) expression value equals: 1.
-	self assert: (matchResult2 at: #last) expression value equals: 5.
+	self assert: (matchResult2 at: #first) value equals: 1.
+	self assert: (matchResult2 at: #last) value equals: 5.
 	self assert: (pattern1 match: model1) isMatch.
-	self
-		assert: ((pattern1 match: model1) at: #joker) expression value
-		equals: 10.
+	self assert: ((pattern1 match: model1) at: #joker) value equals: 10.
 
 	"shorcutTest"
 	matchResult := patternShorcut match: model.
 	self assert: matchResult isMatch.
-	self assert: (matchResult at: #joker) expression value equals: 2.
+	self assert: (matchResult at: #joker) value equals: 2.
 	self deny: (pattern1Shorcut match: model) isMatch.
 	self deny: (pattern3Shorcut match: model) isMatch.
 	matchResult2 := pattern2Shorcut match: model.
-	self assert: (matchResult2 at: #first) expression value equals: 1.
-	self assert: (matchResult2 at: #last) expression value equals: 5.
+	self assert: (matchResult2 at: #first) value equals: 1.
+	self assert: (matchResult2 at: #last) value equals: 5.
 	self assert: (pattern1Shorcut match: model1) isMatch.
 	self
-		assert:
-		((pattern1Shorcut match: model1) at: #joker) expression value
+		assert: ((pattern1Shorcut match: model1) at: #joker) value
 		equals: 10
 ]
 
@@ -387,8 +375,8 @@ PTLPatternMatcherTest >> testJokerMatcher [
 PTLPatternMatcherTest >> testJokerMatcherAutoAssignedNamed [
 
 	| pattern model matchResult |
-	pattern := { (FASTExpressionStatement suchAs:
-		            { (#expression -> FASTPharoMessageSend suchAs: { 
+	pattern := { (RBSequenceNode suchAs:
+		            { (#statements -> RBMessageNode suchAs: { 
 				             (#receiver -> #@).
 				             (#selector -> '+').
 				             (#arguments -> #@) }) }) } asMatcher.
@@ -406,15 +394,17 @@ PTLPatternMatcherTest >> testJokerMatcherAutoAssignedNamed [
 
 { #category : #tests }
 PTLPatternMatcherTest >> testMatchAnAbstraction [
+
 	| pattern model model2 model3 matchResult |
-	pattern := {(FASTExpressionStatement
-		suchAs: {(#expression -> (FASTLiteral named: #x))})} asMatcher.
-	model := self
-		productFASTPharo: PTLPatternMatcherTest >> #methodTestAbstraction.
-	model2 := self
-		productFASTPharo: PTLPatternMatcherTest >> #methodTestAbstraction2.
-	model3 := self
-		productFASTPharo: PTLPatternMatcherTest >> #methodTestAbstraction3.
+	pattern := { (RBSequenceNode suchAs:
+		            { (#statements -> (RBLiteralNode named: #x)) }) }
+		           asMatcher.
+	model := self productFASTPharo:
+		         PTLPatternMatcherTest >> #methodTestAbstraction.
+	model2 := self productFASTPharo:
+		          PTLPatternMatcherTest >> #methodTestAbstraction2.
+	model3 := self productFASTPharo:
+		          PTLPatternMatcherTest >> #methodTestAbstraction3.
 	self deny: (pattern match: model3) isMatch.
 	matchResult := pattern match: model.
 	self assert: matchResult isMatch.
@@ -428,26 +418,25 @@ PTLPatternMatcherTest >> testMatchAnAbstraction [
 PTLPatternMatcherTest >> testMatchModelRefenceWithConfigurationMatcher [
 
 	| pattern |
-	pattern := (FASTReturnStatement suchAs:
-		            { (FASTStringLiteral suchAs: 'klm') }) asMatcher.
-	self assert: (pattern match: (FASTReturnStatement new expression:
-				  (FASTStringLiteral new value: 'klm'))) isMatch.
-	self deny: (pattern match: (FASTReturnStatement new expression:
-				  (FASTStringLiteral new value: 'patrick'))) isMatch
+	pattern := RBSequenceNode suchAs:
+		           { (#statements -> (RBReturnNode suchAs: { 'klm' })) }
+			           asMatcher.
+	self assert: (pattern match: [ ^ 'klm' ] sourceNode body) isMatch.
+	self deny: (pattern match: [ ^ 'patrick' ] sourceNode body) isMatch
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testMatchModelRefenceWithConfigurationMatcher2 [
 
 	| pattern pattern2 model1 model2 |
-	model1 := FASTReturnStatement new expression:
-		          (FASTStringLiteral new value: 'klm').
-	model2 := FASTReturnStatement new expression:
-		          (FASTStringLiteral new value: 'patrick').
-	pattern := (FASTReturnStatement suchAs:
-		            { (FASTStringLiteral suchAs: { 'klm' }) }) asMatcher.
-	pattern2 := (FASTReturnStatement suchAs:
-		             { (FASTStringLiteral suchAs: 'klm') }) asMatcher.
+	model1 := [ ^ 'klm' ] sourceNode body.
+	model2 := [ ^ 'patrick' ] sourceNode body.
+	pattern := RBSequenceNode suchAs:
+		           { (#statements -> (RBReturnNode suchAs: { 'klm' })) }
+			           asMatcher.
+	pattern2 := RBSequenceNode suchAs:
+		            { (#statements -> RBReturnNode suchAs: 'klm') }
+			            asMatcher.
 	self assert: (pattern match: model1) isMatch.
 	self assert: (pattern2 match: model1) isMatch.
 	self deny: (pattern match: model2) isMatch.
@@ -458,12 +447,11 @@ PTLPatternMatcherTest >> testMatchModelRefenceWithConfigurationMatcher2 [
 PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 
 	| pattern model1 model2 |
-	pattern := { ((FASTExpressionStatement suchAs:
-		             { (FASTPharoCascade suchAs:
-			              { (FASTPharoMessageSend suchAs: { 
-					               (#receiver -> 100).
-					               (#selector -> 'klm') }) }) }) named: #a) }
-		           asMatcher.
+	pattern := { (RBSequenceNode suchAs: { (#statements
+		             ->
+			             { (RBCascadeNode suchAs: { (RBMessageNode suchAs: { 
+						               (#receiver -> 100).
+						               (#selector -> 'klm') }) }) }) }) } asMatcher.
 	model1 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestMultipleChildrenNamed.
 	model2 := self productFASTPharo:
@@ -476,9 +464,10 @@ PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 PTLPatternMatcherTest >> testMatchSavedAssociation [
 
 	| matchResult1 matchResult2 matchResult3 |
-	matcher := { ((FASTReturnStatement suchAs:
-		             { (FASTStringLiteral suchAs: { '4' }) }) named: #a) }
-		           asMatcher.
+	matcher := RBSequenceNode suchAs:
+		           { { (#statements
+		            -> ((RBReturnNode suchAs: { '4' }) named: #a)) } }
+			           asMatcher.
 	matchResult1 := matcher match: (self productFASTPharo:
 			                 PTLPatternMatcherTest >> #methodTestReturnLiteral4).
 	matchResult2 := matcher match: (self productFASTPharo:
@@ -487,7 +476,7 @@ PTLPatternMatcherTest >> testMatchSavedAssociation [
 	matchResult3 := matcher match: (self productFASTPharo:
 			                 PTLPatternMatcherTest >> #methodTestReturnString).
 	self assert: matchResult1 isMatch.
-	self assert: (matchResult1 at: #a) class equals: FASTReturnStatement.
+	self assert: (matchResult1 at: #a) class equals: RBReturnNode.
 	self deny: matchResult2 isMatch.
 	self deny: matchResult3 isMatch
 ]
@@ -496,51 +485,49 @@ PTLPatternMatcherTest >> testMatchSavedAssociation [
 PTLPatternMatcherTest >> testMatchTwoLastStatementOfASequence [
 
 	| pattern model matchResult pattern1 matchResult2 |
-	pattern := { 
-		           $*.
-		           (PTLJokerMatcher new named: #lastlast).
-		           (PTLJokerMatcher new named: #last) } asMatcher.
-	pattern1 := { 
-		            $*.
-		            (PTLJokerMatcher new named: #beforebefore50).
-		            (PTLJokerMatcher new named: #before50).
-		            (FASTExpressionStatement suchAs: { 50 }) } asMatcher.
+	pattern := RBSequenceNode suchAs: { (#statements -> { 
+			            $*.
+			            (PTLJokerMatcher new named: #lastlast).
+			            (PTLJokerMatcher new named: #last) }) } asMatcher.
+	pattern1 := RBSequenceNode suchAs: { (#statements -> { 
+			             $*.
+			             (PTLJokerMatcher new named: #beforebefore50).
+			             (PTLJokerMatcher new named: #before50).
+			             50 }) } asMatcher.
 	model := self productFASTPharo:
 		         PTLPatternMatcherTest >> #methodTestEllipsisNode3.
 	matchResult := pattern match: model.
 	self assert: matchResult isMatch.
-	self assert: (matchResult at: #lastlast) expression value equals: 50.
-	self assert: (matchResult at: #last) expression value equals: 26.
+	self assert: (matchResult at: #lastlast) value equals: 50.
+	self assert: (matchResult at: #last) value equals: 26.
 	matchResult2 := pattern1 match: model.
 	self assert: matchResult2 isMatch.
-	self assert: (matchResult2 at: #before50) expression value equals: 42.
-	self
-		assert: (matchResult2 at: #beforebefore50) expression value
-		equals: 100
+	self assert: (matchResult2 at: #before50) value equals: 42.
+	self assert: (matchResult2 at: #beforebefore50) value equals: 100
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testModelReferenceMatcher [
 
 	| pattern |
-	pattern := FASTReturnStatement asMatcher.
-	self assert: (pattern match: (FASTReturnStatement new
-				  expression: (FASTStringLiteral new
-						   value: 'klm';
-						   yourself);
-				  yourself)) isMatch.
-	self deny: (pattern match: FASTExpressionStatement new) isMatch
+	pattern := RBReturnNode asMatcher.
+	self assert:
+		(pattern match: [ ^ 'klm' ] sourceNode statements first) isMatch.
+	self deny:
+		(pattern match: [ 'klm' ] sourceNode statements first) isMatch
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testModelReferenceWithMultipleSubPattern [
 
 	| pattern model1 model2 model3 |
-	pattern := { ((FASTExpressionStatement suchAs:
-		             { (FASTPharoAssignmentExpression suchAs: { 'klm'. 100 }) }) 
-		            named: #a) } asMatcher.
+	pattern := RBSequenceNode suchAs:
+		           { (#statements -> { ((RBAssignmentNode suchAs: { 
+				              (#variable -> 'klm').
+				              (#value -> 100) }) named: #a) }) } asMatcher.
 	model1 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestAssignement.
+
 	model2 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestAssignement2.
 	model3 := self productFASTPharo:
@@ -611,12 +598,10 @@ PTLPatternMatcherTest >> testRBAST [
 PTLPatternMatcherTest >> testSequenceMatcher [
 
 	| pattern model0 model1 model2 mathResult2 |
-	pattern := { 
-		           ((FASTExpressionStatement suchAs:
-			             { FASTPharoBlockExpression }) named: #block).
-		           ((FASTExpressionStatement suchAs: 100) named: #int).
-		           ((FASTExpressionStatement suchAs: { FASTStringLiteral }) 
-			            named: #str) } asMatcher.
+	pattern := RBSequenceNode suchAs: { (#statements -> { 
+			            (RBBlockNode named: #block).
+			            (100 named: #int).
+			            (RBLiteralNode named: #str) }) } asMatcher.
 
 	model0 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestSequence.
@@ -625,37 +610,30 @@ PTLPatternMatcherTest >> testSequenceMatcher [
 	model2 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestSequenceDirectMatch.
 	self deny: (pattern match: model0) isMatch.
-	self deny: (pattern match: model1) isMatch.
+	self assert: (pattern match: model1) isMatch.
 	mathResult2 := pattern match: model2.
 	self assert: mathResult2 isMatch.
-	self
-		assert: (mathResult2 at: #block) expression class
-		equals: FASTPharoBlockExpression.
-	self assert: (mathResult2 at: #int) expression value equals: 100.
-	self
-		assert: (mathResult2 at: #str) expression class
-		equals: FASTStringLiteral
+	self assert: (mathResult2 at: #block) class equals: RBBlockNode.
+	self assert: (mathResult2 at: #int) value equals: 100.
+	self assert: (mathResult2 at: #str) class equals: RBLiteralValueNode
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testSequenceMatcher2 [
 
 	| pattern model0 model1 model2 |
-	pattern := { 
-		           FASTPharoBlockExpression.
-		           100.
-		           FASTStringLiteral } asMatcher.
-	model0 := (self productFASTPharo:
-		           PTLPatternMatcherTest >> #methodTestSequence) collect:
-		          #expression.
-	model1 := (self productFASTPharo:
-		           PTLPatternMatcherTest >> #methodTestSequenceIncomplete) 
-		          collect: #expression.
-	model2 := (self productFASTPharo:
-		           PTLPatternMatcherTest >> #methodTestSequenceDirectMatch) 
-		          collect: #expression.
+	pattern := RBSequenceNode suchAs: { (#statements -> { 
+			            RBBlockNode.
+			            100.
+			            RBLiteralValueNode }) } asMatcher.
+	model0 := self productFASTPharo:
+		          PTLPatternMatcherTest >> #methodTestSequence.
+	model1 := self productFASTPharo:
+		          PTLPatternMatcherTest >> #methodTestSequenceIncomplete.
+	model2 := self productFASTPharo:
+		          PTLPatternMatcherTest >> #methodTestSequenceDirectMatch.
 	self deny: (pattern match: model0) isMatch.
-	self deny: (pattern match: model1) isMatch.
+	self assert: (pattern match: model1) isMatch.
 	self assert: (pattern match: model2) isMatch
 ]
 
@@ -674,14 +652,22 @@ PTLPatternMatcherTest >> testStringCompositeMatcher [
 { #category : #tests }
 PTLPatternMatcherTest >> testStringCompositeMatcher2 [
 
-	| pattern model matchResult |
-	pattern := { (FASTExpressionStatement suchAs:
-		            { (#expression -> (FASTPharoMessageSend suchAs:
-			              { (#selector
-			               -> (FASTPharoSelector suchAs: { (#name -> { 
-						                 'set'.
-						                 ($* named: #x) }) })) })) }) } asMatcher.
-	
+	| pattern model matchResult compatibility |
+	compatibility := Smalltalk version = 'Pharo8.0.0'
+		                 ifTrue: [ 
+			                 { 
+				                 'set'.
+				                 ($* named: #x) } ]
+		                 ifFalse: [ 
+			                 RBSelectorNode suchAs:
+				                 { (RBSelectorNode suchAs: { (#value -> { 
+						                   'set'.
+						                   ($* named: #x) }) }) } ].
+	pattern := { (RBSequenceNode suchAs: { (#statements
+		             ->
+		             (RBMessageNode suchAs: { (#selector -> compatibility) })) }) }
+		           asMatcher.
+
 	model := self productFASTPharo:
 		         PTLPatternMatcherTest >> #methodTestCompose1.
 	matchResult := pattern match: model.
@@ -691,6 +677,7 @@ PTLPatternMatcherTest >> testStringCompositeMatcher2 [
 
 { #category : #tests }
 PTLPatternMatcherTest >> testStringMatcher [
+
 	| pattern |
 	pattern := 'klm' asMatcher.
 	self assert: (pattern match: 'klm') isMatch.

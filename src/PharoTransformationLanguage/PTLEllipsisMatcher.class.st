@@ -37,10 +37,13 @@ PTLEllipsisMatcher >> match: aCollection withContext: aContext [
 
 { #category : #'private-running' }
 PTLEllipsisMatcher >> save: aCollection inContext: aContext [
-	savedSelector
-		ifNotNil: [ (aCollection size == 1 and: [ aCollection first isString ])
+
+	savedSelector ifNotNil: [ 
+		aCollection isCollection ifTrue: [ 
+			(aCollection size == 1 and: [ aCollection first isString ]) 
 				ifTrue: [ ^ aContext at: savedSelector put: aCollection first ].
-			(aCollection isEmpty not and: [ aCollection first isCharacter ])
-				ifTrue: [ ^ aContext at: savedSelector put: ('' join: aCollection) ].
-			aContext at: savedSelector put: aCollection ]
+			(aCollection isEmpty not and: [ aCollection first isCharacter ]) 
+				ifTrue: [ 
+				^ aContext at: savedSelector put: ('' join: aCollection) ] ].
+		aContext at: savedSelector put: aCollection ]
 ]
