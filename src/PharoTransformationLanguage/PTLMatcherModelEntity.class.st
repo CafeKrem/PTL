@@ -72,17 +72,24 @@ PTLMatcherModelEntity >> match: aValue [
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> match: aCollection withContext: aContext [
+
 	| aValue |
+	aCollection isCollection ifTrue: [ aCollection ifEmpty: [ ^ false ] ].
 	aValue := self firstElementOf: aCollection.
 	^ (self hasMatch: aValue withContext: aContext)
-		ifTrue: [ aCollection isCollection
-				ifTrue: [ aCollection first isCharacter
-						ifTrue: [ aCollection removeAll: self value.
-							self flag: #moveIt ]
-						ifFalse: [ self save: (self pop: aCollection) inContext: aContext ] ]
-				ifFalse: [ self save: (self pop: aCollection) inContext: aContext ].
-			true ]
-		ifFalse: [ false ]
+		  ifTrue: [ 
+			  aCollection isCollection
+				  ifTrue: [ 
+					  aCollection first isCharacter
+						  ifTrue: [ 
+							  aCollection removeAll: self value.
+							  self flag: #moveIt ]
+						  ifFalse: [ 
+						  self save: (self pop: aCollection) inContext: aContext ] ]
+				  ifFalse: [ 
+				  self save: (self pop: aCollection) inContext: aContext ].
+			  true ]
+		  ifFalse: [ false ]
 ]
 
 { #category : #'API-patternDSL' }
