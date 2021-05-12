@@ -109,9 +109,13 @@ PTLMatcherModelEntity >> next: aMatcher [
 
 { #category : #util }
 PTLMatcherModelEntity >> pop: aCollection [
-	^ aCollection isCollection
-		ifTrue: [ aCollection removeFirst ]
-		ifFalse: [ aCollection ]
+	aCollection isString
+		ifTrue: [ ^ aCollection ].
+	aCollection isCollection
+		ifTrue: [ aCollection first isCharacter
+				ifTrue: [ ^ aCollection ]
+				ifFalse: [ ^ aCollection removeFirst ] ].
+	^ aCollection
 ]
 
 { #category : #accessor }
@@ -121,8 +125,11 @@ PTLMatcherModelEntity >> previous: aMatcher [
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> save: aCollection inContext: aContext [
-	^ savedSelector ifNotNil: [ 
-		  aContext at: savedSelector put: aCollection ]
+	savedSelector
+		ifNotNil: [ aCollection isCollection
+				ifTrue: [ aCollection first isCharacter
+						ifTrue: [ ^ aContext at: savedSelector put: ('' join: aCollection) ] ].
+			^ aContext at: savedSelector put: aCollection ]
 ]
 
 { #category : #accessor }

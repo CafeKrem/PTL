@@ -40,5 +40,4 @@ PTLJokerMatcher >> match: aCollection withContext: aContext [
 		ifTrue: [ self save: (self pop: aCollection) inContext: aContext.
 			true ]
 		ifFalse: [ false ]
-
 ]
