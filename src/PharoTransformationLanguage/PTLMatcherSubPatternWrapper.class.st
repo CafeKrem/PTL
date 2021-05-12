@@ -38,7 +38,7 @@ PTLMatcherSubPatternWrapper >> hasMatch: aValue withContext: aContext [
 			  attributeTmp := [ 
 			                  (aValue class slotNamed: selector) read: aValue ]
 				                  on: Error
-				                  do: [ aValue perform: selector ] copy.
+				                  do: [ aValue perform: selector ].
 			  self flag: #toClean.
 			  attributeTmp := self convert: attributeTmp.
 
