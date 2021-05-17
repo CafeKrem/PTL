@@ -7,6 +7,11 @@ Class {
 	#category : #'PharoTransformationLanguage-Tests-tests'
 }
 
+{ #category : #testing }
+PTLPatternMatcherTest class >> isAbstract [
+	^ self = PTLPatternMatcherTest
+]
+
 { #category : #compatibility }
 PTLPatternMatcherTest >> compatibilityStringCompositeMatche2 [
 
