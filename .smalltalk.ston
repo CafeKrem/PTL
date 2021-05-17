@@ -10,7 +10,7 @@ SmalltalkCISpec {
   ],
   #testing : {
      #coverage : {
-       #packages : [ 'PharoTransformationLanguage' ],
+       #packages : [ 'PharoTransformationLanguage*' ],
         #format : #lcov
         }
   }
