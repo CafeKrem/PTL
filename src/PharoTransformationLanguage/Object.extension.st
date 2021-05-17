@@ -1,6 +1,6 @@
 Extension { #name : #Object }
 
 { #category : #'*PharoTransformationLanguage' }
-Object >> MTLequalsTo: otherObject [
+Object >> equalsToModel: otherObject [
 	^ self = otherObject 
 ]

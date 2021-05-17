@@ -18,5 +18,9 @@ BaselineOfPTL >> baseline: spec [
 			do: [ spec package: 'PharoTransformationLanguage-Tests-P8' ].
 		spec
 			for: #'pharo9.x'
-			do: [ spec package: 'PharoTransformationLanguage-Tests-P9' ] ]
+			do: [ spec package: 'PharoTransformationLanguage-Tests-P9' ].
+		spec
+			for: #MooseX
+			do: [ 
+			spec package: 'PharoTransformationLanguage-MooseCompatibility' ] ]
 ]

@@ -1,7 +1,7 @@
 Extension { #name : #MooseObject }
 
-{ #category : #'*PharoTransformationLanguage' }
-MooseObject >> MTLequalsTo: aValue [
+{ #category : #'*PharoTransformationLanguage-MooseCompatibility' }
+MooseObject >> equalsToModel: aValue [
 	| selfProperty |
 	self class = aValue class
 		ifFalse: [ ^ false ].
@@ -15,7 +15,7 @@ MooseObject >> MTLequalsTo: aValue [
 	(self children
 		allSatisfy: [ :each | 
 			aValue children
-				detect: [ :valueChild | each MTLequalsTo: valueChild ]
+				detect: [ :valueChild | each equalsToModel: valueChild ]
 				ifFound: [ true ]
 				ifNone: [ false ] ])
 		ifFalse: [ ^ false ].

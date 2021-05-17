@@ -9,13 +9,13 @@ PTLJokerMatcher class >> asMatcher [
 	^ self new
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'private-running' }
 PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 
 	aValue isCollection ifTrue: [ aValue isEmpty ifTrue: [ ^ false ] ].
 	savedSelector ifNotNil: [ :selector | 
 		(aContext at: selector) ifNotNil: [ :item | 
-			^ item MTLequalsTo: (self firstElementOf: aValue) ] ].
+			^ item equalsToModel: (self firstElementOf: aValue) ] ].
 	^ next
 		  ifNil: [ 
 			  previous ifNotNil: [ 
