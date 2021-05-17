@@ -4,8 +4,19 @@ Class {
 	#instVars : [
 		'matcher'
 	],
-	#category : #'PharoTransformationLanguage-Tests'
+	#category : #'PharoTransformationLanguage-Tests-tests'
 }
+
+{ #category : #testing }
+PTLPatternMatcherTest class >> isAbstract [
+	^ self = PTLPatternMatcherTest
+]
+
+{ #category : #compatibility }
+PTLPatternMatcherTest >> compatibilityStringCompositeMatche2 [
+
+	^ self subclassResponsibility
+]
 
 { #category : #tests }
 PTLPatternMatcherTest >> methodRBWhileTrue [
@@ -17,28 +28,28 @@ PTLPatternMatcherTest >> methodRBWhileTrue [
 	4 = 5 ] whileTrue: [ 6 ]   
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAbstraction [
 	100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAbstraction2 [
 	'klm'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAbstraction3 [
 	{  }
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAssignement [
 	| klm |
 	klm := 100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAssignement2 [
 	| klm edgard patrick |
 	edgard := OrderedCollection new.
@@ -46,19 +57,19 @@ PTLPatternMatcherTest >> methodTestAssignement2 [
 	klm := 200
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestAssignement3 [
 	| edgard patrick |
 	edgard := OrderedCollection new.
 	patrick := 100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestBinOp [
 	10 + 10
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestBinOp1 [
 	10 + 5
 ]
@@ -68,12 +79,12 @@ PTLPatternMatcherTest >> methodTestCompose1 [
 	'klm' setPatrick
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestEllipsisNode [
 	100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestEllipsisNode1 [
 	'klm'.
 	'jiop'.
@@ -81,14 +92,14 @@ PTLPatternMatcherTest >> methodTestEllipsisNode1 [
 	100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestEllipsisNode2 [
 	'klm'.
 	'patrick'.
 	'edgard'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestEllipsisNode3 [
 	1.
 	2.
@@ -101,7 +112,7 @@ PTLPatternMatcherTest >> methodTestEllipsisNode3 [
 	26
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestJoker [
 	1.
 	2.
@@ -110,13 +121,13 @@ PTLPatternMatcherTest >> methodTestJoker [
 	5
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestJoker2 [
 	10.
 	100
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestMultipleChildrenNamed [
 	100
 		patrick;
@@ -124,7 +135,7 @@ PTLPatternMatcherTest >> methodTestMultipleChildrenNamed [
 		edgard
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestMultipleChildrenNamed2 [
 	100
 		a;
@@ -139,24 +150,24 @@ PTLPatternMatcherTest >> methodTestMultipleChildrenNamed2 [
 		t
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestReturnLiteral4 [
 	^ '4'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestReturnLiteralComplex [
 
 	^ '1' + '2' + '3' + '4'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestReturnString [
 
 	^ 'klm'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestSequence [
 	'patrick'.
 	'edgard'.
@@ -166,14 +177,14 @@ PTLPatternMatcherTest >> methodTestSequence [
 	'coucou'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestSequenceDirectMatch [
 	[ 'klm' ].
 	100.
 	'patrick'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PTLPatternMatcherTest >> methodTestSequenceIncomplete [
 	[ 'klm' ].
 	100.
@@ -186,6 +197,11 @@ PTLPatternMatcherTest >> productFASTPharo: aCompiledMethod [
 	"(FASTSmalltalkImporterVisitor new
 		runWithSource: aCompiledMethod sourceCode) statements
 		asOrderedCollection sorted: [ :a :b | a startPos < b startPos ]"
+]
+
+{ #category : #compatibility }
+PTLPatternMatcherTest >> rBASTSpecificCode [
+	self subclassResponsibility.
 ]
 
 { #category : #tests }
@@ -372,24 +388,6 @@ PTLPatternMatcherTest >> testJokerMatcher [
 ]
 
 { #category : #tests }
-PTLPatternMatcherTest >> testJokerMatcher3 [
-
-	| pattern a |
-	Smalltalk version == 'Pharo8.0.0' ifFalse: [ ^ true ].
-	pattern := RBMessageNode suchAs: { (#selector -> #'@selector') }.
-	self
-		assert:
-			((pattern match: ([ 1 -> 3 ] sourceNode statements at: 1)) at:
-				 #selector)
-		equals: '->'.
-	self
-		assert:
-			((pattern match: ([ a foo ] sourceNode statements at: 1)) at:
-				 #selector)
-		equals: 'foo'
-]
-
-{ #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcherAutoAssignedNamed [
 
 	| pattern model matchResult |
@@ -559,7 +557,6 @@ PTLPatternMatcherTest >> testModelReferenceWithMultipleSubPattern [
 PTLPatternMatcherTest >> testRBAST [
 
 	| pattern model matchResult patternWithoutParenthesis |
-	
 	pattern := { (RBSequenceNode suchAs:
 		            { (#statements -> (RBMessageNode suchAs: { 
 				              (#receiver -> (RBBlockNode suchAs:
@@ -567,8 +564,7 @@ PTLPatternMatcherTest >> testRBAST [
 					                 -> (RBSequenceNode suchAs: { (#statements -> { 
 								                   ($* named: #a).
 								                   (PTLJokerMatcher named: #cond) }) })) })).
-				              (#selector
-				               -> ((Smalltalk version = 'Pharo8.0.0') ifTrue:  [ 'whileTrue:']ifFalse: [RBSelectorNode suchAs: { 'whileTrue:' }])).
+				              (#selector -> self rBASTSpecificCode).
 				              (#arguments -> (RBBlockNode suchAs:
 					                { (#body -> (RBSequenceNode named: #whileBlock)) })) })) }) }
 		           asMatcher.
@@ -579,8 +575,10 @@ PTLPatternMatcherTest >> testRBAST [
 						                                { (#body -> RBSequenceNode 
 							                                 suchAs: { (#statements -> { 
 									                                  ($* named: #a).
-									                                  (PTLJokerMatcher named: #cond) }) }) }).
-					                               (#selector ->((Smalltalk version = 'Pharo8.0.0') ifTrue:  [ 'whileTrue:']ifFalse: [RBSelectorNode suchAs: { 'whileTrue:' }]) ).
+									                                  (PTLJokerMatcher named:
+										                                   #cond) }) }) }).
+					                               (#selector
+					                                -> self rBASTSpecificCode).
 					                               (#arguments -> RBBlockNode 
 						                                suchAs:
 						                                { (#body -> RBSequenceNode 
@@ -671,16 +669,7 @@ PTLPatternMatcherTest >> testStringCompositeMatcher [
 PTLPatternMatcherTest >> testStringCompositeMatcher2 [
 
 	| pattern model matchResult compatibility |
-	compatibility := Smalltalk version = 'Pharo8.0.0'
-		                 ifTrue: [ 
-			                 { 
-				                 'set'.
-				                 ($* named: #x) } ]
-		                 ifFalse: [ 
-			                 RBSelectorNode suchAs:
-				                 { (RBSelectorNode suchAs: { (#value -> { 
-						                   'set'.
-						                   ($* named: #x) }) }) } ].
+	compatibility := self compatibilityStringCompositeMatche2.
 	pattern := { (RBSequenceNode suchAs: { (#statements
 		             ->
 		             (RBMessageNode suchAs: { (#selector -> compatibility) })) }) }
