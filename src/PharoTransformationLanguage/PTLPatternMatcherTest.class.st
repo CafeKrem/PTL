@@ -372,6 +372,24 @@ PTLPatternMatcherTest >> testJokerMatcher [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testJokerMatcher3 [
+
+	| pattern a |
+	Smalltalk version == 'Pharo8.0.0' ifFalse: [ ^ true ].
+	pattern := RBMessageNode suchAs: { (#selector -> #'@selector') }.
+	self
+		assert:
+			((pattern match: ([ 1 -> 3 ] sourceNode statements at: 1)) at:
+				 #selector)
+		equals: '->'.
+	self
+		assert:
+			((pattern match: ([ a foo ] sourceNode statements at: 1)) at:
+				 #selector)
+		equals: 'foo'
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcherAutoAssignedNamed [
 
 	| pattern model matchResult |
