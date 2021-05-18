@@ -559,7 +559,7 @@ PTLPatternMatcherTest >> testNonApplicativeCondition [
 	| pattern |
 	pattern := (RBReturnNode
 		            suchAs: { (#value -> RBLiteralValueNode named: #x) }
-		            suchAsNot: [ :x | x value isString not ]) asMatcher.
+		            like: [ :x | x value isString not ]) asMatcher.
 	self
 		assert:
 		((pattern match: ([ ^ 100 ] sourceNode statements at: 1)) at: #x) value

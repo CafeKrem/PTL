@@ -28,3 +28,9 @@ Class >> suchAs: anObject [
 						subPatterns: {anObject asMatcher asSubPatternWrapper};
 						yourself ])
 ]
+
+{ #category : #'*PharoTransformationLanguage' }
+Class >> suchAs: aCollection like: aFullBlockClosure [
+
+	^ (self suchAs: aCollection) like: aFullBlockClosure
+]

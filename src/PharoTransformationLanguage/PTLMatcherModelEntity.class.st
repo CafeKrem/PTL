@@ -60,6 +60,11 @@ PTLMatcherModelEntity >> isJoker [
 	^ false
 ]
 
+{ #category : #transformationLanguage }
+PTLMatcherModelEntity >> like: aFullBlockClosure [ 
+	nacBlock := aFullBlockClosure
+]
+
 { #category : #'API-matchRuning' }
 PTLMatcherModelEntity >> match: aValue [
 
@@ -136,9 +141,4 @@ PTLMatcherModelEntity >> save: aCollection inContext: aContext [
 { #category : #accessor }
 PTLMatcherModelEntity >> savedSelector: aString [
 	savedSelector := aString
-]
-
-{ #category : #transformationLanguage }
-PTLMatcherModelEntity >> suchAsNot: aFullBlockClosure [ 
-	nacBlock := aFullBlockClosure
 ]
