@@ -5,7 +5,8 @@ Class {
 		'next',
 		'matchedNodes',
 		'savedSelector',
-		'previous'
+		'previous',
+		'nacBlock'
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
@@ -135,4 +136,9 @@ PTLMatcherModelEntity >> save: aCollection inContext: aContext [
 { #category : #accessor }
 PTLMatcherModelEntity >> savedSelector: aString [
 	savedSelector := aString
+]
+
+{ #category : #transformationLanguage }
+PTLMatcherModelEntity >> suchAsNot: aFullBlockClosure [ 
+	nacBlock := aFullBlockClosure
 ]
