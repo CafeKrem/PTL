@@ -16,6 +16,11 @@ PTLMatcherResult >> at: aKey [
 ]
 
 { #category : #accessing }
+PTLMatcherResult >> at: key ifPresent: bloc [
+	^ context at: key ifPresent: bloc
+]
+
+{ #category : #accessing }
 PTLMatcherResult >> at: key put: aValue [
 	context at: key put: aValue
 ]

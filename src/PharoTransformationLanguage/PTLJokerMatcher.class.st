@@ -11,21 +11,19 @@ PTLJokerMatcher class >> asMatcher [
 
 { #category : #'as yet unclassified' }
 PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
-
-	savedSelector ifNotNil: [ :selector | 
-		(aContext at: selector) ifNotNil: [ :item | 
-			^ item MTLequalsTo: (self firstElementOf: aValue) ] ].
+	aContext
+		at: savedSelector
+		ifPresent: [ :item | ^ item MTLequalsTo: (self firstElementOf: aValue) ].
 	^ next
-		  ifNil: [ 
-			  previous ifNotNil: [ 
-				  (previous isEllipsis or: [ previous isJoker ]) ifTrue: [ 
-					  aValue size == 1 ifFalse: [ ^ false ] ] ].
-			  true ]
-		  ifNotNil: [ 
-			  previous ifNotNil: [ 
-				  (previous isEllipsis or: [ previous isJoker ]) ifTrue: [ 
-					  ^ next hasMatch: aValue allButFirst withContext: aContext ] ].
-			  true ]
+		ifNil: [ previous
+				ifNotNil: [ (previous isEllipsis or: [ previous isJoker ])
+						ifTrue: [ aValue size == 1
+								ifFalse: [ ^ false ] ] ].
+			true ]
+		ifNotNil: [ previous
+				ifNotNil: [ (previous isEllipsis or: [ previous isJoker ])
+						ifTrue: [ ^ next hasMatch: aValue allButFirst withContext: aContext ] ].
+			true ]
 ]
 
 { #category : #testing }
