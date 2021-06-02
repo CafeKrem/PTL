@@ -5,7 +5,8 @@ Class {
 		'next',
 		'matchedNodes',
 		'savedSelector',
-		'previous'
+		'previous',
+		'nacBlock'
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
@@ -57,6 +58,11 @@ PTLMatcherModelEntity >> isEllipsis [
 { #category : #testing }
 PTLMatcherModelEntity >> isJoker [
 	^ false
+]
+
+{ #category : #transformationLanguage }
+PTLMatcherModelEntity >> like: aFullBlockClosure [ 
+	nacBlock := aFullBlockClosure
 ]
 
 { #category : #'API-matchRuning' }

@@ -35,7 +35,24 @@ PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
 		ifFalse: [ false ]
 ]
 
+{ #category : #'private-running' }
+PTLMatcherModelReference >> match: aValue withContext: aContext [
+
+	(super match: aValue withContext: aContext)
+		ifTrue: [ 
+			^ self nacBlock valueWithArguments:
+				  (self nacBlock argumentNames collect: [ :name | 
+					   aContext at: name ]) ]
+		ifFalse: [ ^ false ]
+]
+
 { #category : #accessor }
 PTLMatcherModelReference >> modelDescription: aClass [
 	modelDescription := aClass
+]
+
+{ #category : #accesor }
+PTLMatcherModelReference >> nacBlock [
+
+	^ nacBlock ifNil: [ nacBlock := [ true ] ]
 ]

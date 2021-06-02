@@ -554,6 +554,21 @@ PTLPatternMatcherTest >> testModelReferenceWithMultipleSubPattern [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testNonApplicativeCondition [
+
+	| pattern |
+	pattern := (RBReturnNode
+		            suchAs: { (#value -> RBLiteralValueNode named: #x) }
+		            like: [ :x | x value isString not ]) asMatcher.
+	self
+		assert:
+		((pattern match: ([ ^ 100 ] sourceNode statements at: 1)) at: #x) value
+		equals: 100.
+	self deny:
+		(pattern match: ([ ^ 'klm' ] sourceNode statements at: 1)) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testRBAST [
 
 	| pattern model matchResult patternWithoutParenthesis |
