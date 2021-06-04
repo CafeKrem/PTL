@@ -4,12 +4,6 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
-{ #category : #'private-running' }
-PTLEllipsisMatcher >> hasMatch: aCollection withContext: aContext [
-	1 halt.
-	"do nothing in this case"
-]
-
 { #category : #testing }
 PTLEllipsisMatcher >> isEllipsis [
 	^ true
