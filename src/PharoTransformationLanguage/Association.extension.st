@@ -4,7 +4,7 @@ Extension { #name : #Association }
 Association >> asMatcher [
 
 	| wrapper |
-	wrapper := PTLMatcherSubPatternWrapper new
+	wrapper := PTLMatcherSubPattern new
 		           selector: self key;
 		           matcherModel: self value asMatcher;
 		           yourself.

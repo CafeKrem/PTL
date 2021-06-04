@@ -23,7 +23,7 @@ PTLMatcherModelEntity >> asMatcher [
 
 { #category : #converting }
 PTLMatcherModelEntity >> asSubPatternWrapper [
-	^ PTLMatcherSubPatternWrapper new
+	^ PTLMatcherSubPattern new
 		matcherModel: self;
 		yourself
 ]

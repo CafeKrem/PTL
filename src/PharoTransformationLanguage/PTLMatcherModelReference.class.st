@@ -28,11 +28,14 @@ PTLMatcherModelReference >> configuration: aCollection [
 
 { #category : #'as yet unclassified' }
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
+
 	| value |
 	value := self firstElementOf: aValue.
 	^ (value isKindOf: modelDescription)
-		ifTrue: [ configuration match: value withContext: aContext ]
-		ifFalse: [ false ]
+		  ifTrue: [ 
+			  configuration allSatisfy: [ :pattern | 
+				  pattern match: value withContext: aContext ] ]
+		  ifFalse: [ false ]
 ]
 
 { #category : #'private-running' }
