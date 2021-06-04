@@ -13,21 +13,10 @@ PTLMatcherSubPatternWrapper >> asSubPatternWrapper [
 	^ self
 ]
 
-{ #category : #actions }
-PTLMatcherSubPatternWrapper >> convert: attributeTmp [
-
-	attributeTmp isString ifTrue: [ ^ attributeTmp asOrderedCollection ].
-	attributeTmp isCollection ifTrue: [ 
-		^ attributeTmp asOrderedCollection ].
-
-	^ attributeTmp
-]
-
 { #category : #'private-running' }
 PTLMatcherSubPatternWrapper >> hasMatch: aValue withContext: aContext [
 
 	| attributeTmp |
-	self flag: #warning.
 	^ selector
 		  ifNil: [ 
 			  (matcherModel match: aValue withContext: aContext) or: [ 
@@ -37,11 +26,8 @@ PTLMatcherSubPatternWrapper >> hasMatch: aValue withContext: aContext [
 			  attributeTmp := ([ 
 			                   (aValue class slotNamed: selector) read: aValue ]
 				                   on: Error
-				                   do: [ aValue perform: selector ]) copy.
-			  self flag: #toClean.
-
-			  attributeTmp := self convert: attributeTmp.
-
+				                   do: [ aValue perform: selector ]) copy
+				                  convertToCollection.
 			  matcherModel match: attributeTmp withContext: aContext ]
 ]
 
