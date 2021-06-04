@@ -50,6 +50,14 @@ PTLMatcherModelEntity >> hasNext [
 	^ next isNotNil
 ]
 
+{ #category : #hook }
+PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
+
+	"you can overide me to add specific verification. for saving in context your matched value."
+
+	self save: (self pop: aValue) inContext: aContext
+]
+
 { #category : #testing }
 PTLMatcherModelEntity >> isEllipsis [
 	^ false
@@ -84,16 +92,7 @@ PTLMatcherModelEntity >> match: aCollection withContext: aContext [
 	aValue := self firstElementOf: aCollection.
 	^ (self hasMatch: aValue withContext: aContext)
 		  ifTrue: [ 
-			  aCollection isCollection
-				  ifTrue: [ 
-					  aCollection first isCharacter
-						  ifTrue: [ 
-							  aCollection removeAll: self value.
-							  self flag: #moveIt ]
-						  ifFalse: [ 
-						  self save: (self pop: aCollection) inContext: aContext ] ]
-				  ifFalse: [ 
-				  self save: (self pop: aCollection) inContext: aContext ].
+			  self hookSaveAction: aCollection withContext: aContext.
 			  true ]
 		  ifFalse: [ false ]
 ]
