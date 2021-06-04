@@ -207,22 +207,6 @@ PTLPatternMatcherTest >> rBASTSpecificCode [
 ]
 
 { #category : #tests }
-PTLPatternMatcherTest >> testAPatternShouldMatchTwiceTheSameModel [
-
-	| pattern model |
-	pattern := RBSequenceNode suchAs:
-		           { (#statements
-		            -> { (RBLiteralNode suchAs: { (#value -> 42) }) }) }
-			           asMatcher.
-
-	model := self productFASTPharo:
-		         PTLPatternMatcherTest >> #methodTestShouldNotBeModify.
-
-	self assert: (pattern match: model) isMatch.
-	self assert: (pattern match: model) isMatch
-]
-
-{ #category : #tests }
 PTLPatternMatcherTest >> testBinOp [
 
 	| pattern model model1 matcherResult |
