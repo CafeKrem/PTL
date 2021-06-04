@@ -36,7 +36,7 @@ PTLJokerMatcher >> jokerHasMatch: aValue [
 	^ aValue size == 1
 ]
 
-{ #category : #testing }
+{ #category : #action }
 PTLJokerMatcher >> jokerHasMatch: aValue withNext: aNext withContext: aContext [
 
 	^ aNext hasMatch: aValue allButFirst withContext: aContext
