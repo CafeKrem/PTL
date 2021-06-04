@@ -8,15 +8,15 @@ Class {
 }
 
 { #category : #'private-running' }
-PTLListMatcher >> match: aCollection withContext: aContext [
+PTLListMatcher >> match: aValue withContext: aContext [
 
-	| isMatched matcherTmp tmpCollection |
-	tmpCollection := aCollection copy asOrderedCollection.
+	| isMatched matcherTmp tmpValue |
+	tmpValue := aValue copy asOrderedCollection.
 	matcherTmp := matcher.
-	isMatched := matcherTmp match: tmpCollection withContext: aContext.
+	isMatched := matcherTmp match: tmpValue withContext: aContext.
 	[ isMatched and: [ matcherTmp hasNext ] ] whileTrue: [ 
 		isMatched := matcherTmp next
-			             match: tmpCollection
+			             match: tmpValue
 			             withContext: aContext.
 		matcherTmp := matcherTmp next ].
 	^ isMatched

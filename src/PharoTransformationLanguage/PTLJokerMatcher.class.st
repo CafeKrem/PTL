@@ -43,9 +43,9 @@ PTLJokerMatcher >> jokerHasMatch: aValue withNext: aNext withContext: aContext [
 ]
 
 { #category : #'private-running' }
-PTLJokerMatcher >> match: aCollection withContext: aContext [
-	^ (self hasMatch: aCollection withContext: aContext)
-		ifTrue: [ self save: (self pop: aCollection) inContext: aContext.
+PTLJokerMatcher >> match: aValue withContext: aContext [
+	^ (self hasMatch: aValue withContext: aContext)
+		ifTrue: [ self save: (self pop: aValue) inContext: aContext.
 			true ]
 		ifFalse: [ false ]
 ]
