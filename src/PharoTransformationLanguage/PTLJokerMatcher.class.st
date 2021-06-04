@@ -17,21 +17,29 @@ PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 		(aContext at: selector) ifNotNil: [ :item | 
 			^ item equalsToModel: (self firstElementOf: aValue) ] ].
 	^ next
-		  ifNil: [ 
-			  previous ifNotNil: [ 
-				  (previous isEllipsis or: [ previous isJoker ]) ifTrue: [ 
-					  aValue size == 1 ifFalse: [ ^ false ] ] ].
-			  true ]
+		  ifNil: [ previous jokerHasMatch: aValue ]
 		  ifNotNil: [ 
-			  previous ifNotNil: [ 
-				  (previous isEllipsis or: [ previous isJoker ]) ifTrue: [ 
-					  ^ next hasMatch: aValue allButFirst withContext: aContext ] ].
-			  true ]
+		  previous
+			  jokerHasMatch: aValue
+			  withNext: next
+			  withContext: aContext ]
 ]
 
 { #category : #testing }
 PTLJokerMatcher >> isJoker [
 	^ true
+]
+
+{ #category : #action }
+PTLJokerMatcher >> jokerHasMatch: aValue [
+
+	^ aValue size == 1
+]
+
+{ #category : #testing }
+PTLJokerMatcher >> jokerHasMatch: aValue withNext: aNext withContext: aContext [
+
+	^ aNext hasMatch: aValue allButFirst withContext: aContext
 ]
 
 { #category : #'private-running' }

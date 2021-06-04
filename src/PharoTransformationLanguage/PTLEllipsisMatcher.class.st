@@ -9,6 +9,18 @@ PTLEllipsisMatcher >> isEllipsis [
 	^ true
 ]
 
+{ #category : #action }
+PTLEllipsisMatcher >> jokerHasMatch: aValue [
+
+	^ aValue size == 1
+]
+
+{ #category : #testing }
+PTLEllipsisMatcher >> jokerHasMatch: aValue withNext: aNext withContext: aContext [
+
+	^ aNext hasMatch: aValue allButFirst withContext: aContext
+]
+
 { #category : #'private-running' }
 PTLEllipsisMatcher >> match: aCollection withContext: aContext [
 

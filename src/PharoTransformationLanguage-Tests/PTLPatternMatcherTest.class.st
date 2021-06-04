@@ -333,6 +333,18 @@ PTLPatternMatcherTest >> testIntegerMatcher [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testJoker3 [
+	| pattern matcherResult  |
+	pattern := { 1. 2 . 3. #'@klm'  . 5 . 6 } asMatcher.
+	
+	matcherResult := (pattern match: {1 . 2 . 3 . 4 . 5 . 6}).
+	
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #klm) equals: 4
+ 
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcher [
 
 	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut |

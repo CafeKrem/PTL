@@ -68,6 +68,18 @@ PTLMatcherModelEntity >> isJoker [
 	^ false
 ]
 
+{ #category : #action }
+PTLMatcherModelEntity >> jokerHasMatch: aValue [
+
+	^ true
+]
+
+{ #category : #testing }
+PTLMatcherModelEntity >> jokerHasMatch: aCollection withNext: aPTLMatcherInteger withContext: aPTLMatcherResult [
+
+	^ true
+]
+
 { #category : #transformationLanguage }
 PTLMatcherModelEntity >> like: aFullBlockClosure [ 
 	nacBlock := aFullBlockClosure
