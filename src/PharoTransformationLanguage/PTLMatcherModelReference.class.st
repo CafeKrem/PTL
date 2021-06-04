@@ -43,6 +43,7 @@ PTLMatcherModelReference >> match: aValue withContext: aContext [
 
 	(super match: aValue withContext: aContext)
 		ifTrue: [ 
+			self flag: #tryToConnectToHook.
 			^ self nacBlock valueWithArguments:
 				  (self nacBlock argumentNames collect: [ :name | 
 					   aContext at: name ]) ]
