@@ -19,3 +19,8 @@ Collection >> asMatcher [
 Collection >> asSubPatternWrapper [
 	^ self collect: [ :each | each asSubPatternWrapper ]
 ]
+
+{ #category : #'*PharoTransformationLanguage' }
+Collection >> convertToCollection [
+	^ self asOrderedCollection 
+]
