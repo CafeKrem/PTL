@@ -77,8 +77,8 @@ pattern := { (RBSequenceNode suchAs: { (#statements -> {
 	rbAST := RBParser parseExpression: 'a := 5. b:= 5. a + b'.
 	matchResult := pattern match: rbAST.
 	matchResult isMatch. "true"
-	matchResult at: #x. "RBAssignementNode ..."
-	matchResult at: #y ."RBAssignementNode ..."
+	matchResult at: #x. "RBVariableNode ..."
+	matchResult at: #y ."RBVariableNode ..."
 	matchResult at: #message.
 ```
 so to summarize , in order to write pattern matching on Object/element of your metaModel. 
