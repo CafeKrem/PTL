@@ -23,8 +23,10 @@ PTLRangeMatcher >> from: anInteger [
 
 { #category : #'private-running' }
 PTLRangeMatcher >> hasMatch: anInteger withContext: aContext [
-	^ (from rangeMatch: anInteger withContext: aContext) <= anInteger
-		and: [ anInteger <= (to rangeMatch: anInteger withContext: aContext) ]
+	| value |
+	value := self firstElementOf: anInteger.
+	^ (from rangeMatch: value withContext: aContext) <= value
+		and: [ value <= (to rangeMatch: value withContext: aContext) ]
 ]
 
 { #category : #accessor }
