@@ -663,6 +663,19 @@ PTLPatternMatcherTest >> testRangeMatcher2 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher3 [
+	| pattern |
+	pattern := Point
+		suchAs:
+			{(#y -> #'@foo').
+			(#x -> (PTLRangeMatcher from: #'@foo' to: 10))}.
+	self assert: (pattern match: 7 @ 2) isMatch.
+	self assert: (pattern match: 10 @ 2) isMatch.
+	self assert: (pattern match: 10 @ 10) isMatch.
+	self deny: (pattern match: 5 @ 10) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testSequenceMatcher [
 
 	| pattern model0 model1 model2 mathResult2 |
