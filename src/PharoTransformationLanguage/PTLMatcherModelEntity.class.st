@@ -60,7 +60,9 @@ PTLMatcherModelEntity >> firstElementOf: aValue [
 	aValue isString
 		ifTrue: [^ aValue ].
 	aValue isCollection
-		ifTrue: [ aValue first isCharacter
+		ifTrue: [ 
+			aValue isEmpty ifTrue: [ ^ {  } ].
+			aValue first isCharacter
 				ifTrue: [ ^ aValue ]
 				ifFalse: [ ^ aValue first ] ].
 	^ aValue
