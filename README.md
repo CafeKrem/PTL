@@ -101,6 +101,17 @@ in this part , there is **#'@x'** and **#'@y'** **x** and **y**  are already use
 Thanks to this it will only match if the value matched in **x** and **y** are equals to the current node. 
 
 
+#### match a range of value 
+
+I match if the matched value is in my range.
+
+```smalltalk
+pattern := #'16..31' asMatcher.  ""
+(pattern match: 16 ) isMatch" true"
+(pattern match: 31 ) isMatch" true"
+(pattern match: 18 ) isMatch" true"
+(pattern match: 0 ) isMatch" false"
+```
 
 
 ## how to use it as maintener
