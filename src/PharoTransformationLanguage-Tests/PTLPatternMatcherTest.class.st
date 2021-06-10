@@ -640,6 +640,17 @@ PTLPatternMatcherTest >> testRBAST [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher [
+	| pattern |
+	pattern := PTLRangeMatcher from: 5 to: 10.
+	self assert: (pattern match: 5) isMatch.
+	self assert: (pattern match: 6) isMatch.
+	self assert: (pattern match: 10) isMatch.
+	self deny: (pattern match: 2) isMatch.
+	self deny: (pattern match: 12) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testSequenceMatcher [
 
 	| pattern model0 model1 model2 mathResult2 |
