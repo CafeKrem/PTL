@@ -16,13 +16,17 @@ PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 	savedSelector ifNotNil: [ :selector | 
 		(aContext at: selector) ifNotNil: [ :item | 
 			^ item equalsToModel: (self firstElementOf: aValue) ] ].
-	^ next
-		  ifNil: [ previous jokerHasMatch: aValue ]
-		  ifNotNil: [ 
-		  previous
-			  jokerHasMatch: aValue
-			  withNext: next
-			  withContext: aContext ]
+	next
+		ifNil: [ 
+			previous ifNotNil: [ ^ previous jokerHasMatch: aValue ].
+			^ true ]
+		ifNotNil: [ 
+			previous ifNotNil: [ 
+				^ previous
+					  jokerHasMatch: aValue
+					  withNext: next
+					  withContext: aContext ].
+			^ true ]
 ]
 
 { #category : #testing }
