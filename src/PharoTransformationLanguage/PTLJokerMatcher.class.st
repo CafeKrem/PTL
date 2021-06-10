@@ -55,3 +55,9 @@ PTLJokerMatcher >> match: aValue withContext: aContext [
 			true ]
 		ifFalse: [ false ]
 ]
+
+{ #category : #action }
+PTLJokerMatcher >> rangeMatch: anInteger withContext: aContext [
+	self match: anInteger withContext: aContext.
+	^ aContext at: savedSelector
+]

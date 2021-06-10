@@ -11,8 +11,8 @@ Class {
 { #category : #accessor }
 PTLRangeMatcher class >> from: lower to: upper [
 	^ self new
-		from: lower;
-		to: upper;
+		from: lower asMatcher;
+		to: upper asMatcher;
 		yourself
 ]
 
@@ -22,8 +22,9 @@ PTLRangeMatcher >> from: anInteger [
 ]
 
 { #category : #'private-running' }
-PTLRangeMatcher >> hasMatch: anInteger withContext: aPTLMatcherResult [
-	^ from <= anInteger and: [ anInteger <= to ]
+PTLRangeMatcher >> hasMatch: anInteger withContext: aContext [
+	^ (from rangeMatch: anInteger withContext: aContext) <= anInteger
+		and: [ anInteger <= (to rangeMatch: anInteger withContext: aContext) ]
 ]
 
 { #category : #accessor }
