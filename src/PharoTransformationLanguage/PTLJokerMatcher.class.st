@@ -18,6 +18,8 @@ PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 			^ item equalsToModel: (self firstElementOf: aValue) ] ].
 	next
 		ifNil: [ 
+			self flag: #warning.
+			self flag: 'if you try to send jokerHasMatch: to previous if it'' nil and you implement it it will crash the CI (not failing test returning an error)'.
 			previous ifNotNil: [ ^ previous jokerHasMatch: aValue ].
 			^ true ]
 		ifNotNil: [ 
