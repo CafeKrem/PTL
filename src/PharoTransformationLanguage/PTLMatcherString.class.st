@@ -16,3 +16,11 @@ PTLMatcherString >> hasMatch: aValue withContext: aContext [
 								caseSensitive: true ]
 						ifFalse: [ false ] ] ]
 ]
+
+{ #category : #hook }
+PTLMatcherString >> hookSaveAction: aValue withContext: aContext [
+
+	(aValue isCollection and: [ aValue first isCharacter ])
+		ifTrue: [ aValue removeAll: self value ]
+		ifFalse: [ super hookSaveAction: aValue withContext: aContext ]
+]

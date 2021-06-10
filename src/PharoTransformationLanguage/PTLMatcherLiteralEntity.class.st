@@ -7,6 +7,12 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #testing }
+PTLMatcherLiteralEntity class >> isAbstract [
+
+	^ self = PTLMatcherLiteralEntity
+]
+
 { #category : #'private-running' }
 PTLMatcherLiteralEntity >> hasMatch: aValue withContext: aContext [
 
@@ -23,6 +29,6 @@ PTLMatcherLiteralEntity >> value [
 ]
 
 { #category : #accessing }
-PTLMatcherLiteralEntity >> value: anInteger [ 
-	value := anInteger
+PTLMatcherLiteralEntity >> value: aLiteral [ 
+	value := aLiteral
 ]

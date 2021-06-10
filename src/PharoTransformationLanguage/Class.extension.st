@@ -4,7 +4,7 @@ Extension { #name : #Class }
 Class >> asMatcher [
 	^ PTLMatcherModelReference
 		withClass: self
-		withConfiguration: PTLMatcherSubPattern new
+		withConfiguration: OrderedCollection new
 ]
 
 { #category : #'*PharoTransformationLanguage' }
@@ -17,16 +17,15 @@ Class >> named: aString [
 
 { #category : #'*PharoTransformationLanguage' }
 Class >> suchAs: anObject [
+
 	^ PTLMatcherModelReference
-		withClass: self
-		withConfiguration:
-			((anObject isCollection and: [ anObject isString not ])
-				ifTrue: [ PTLMatcherSubPattern new
-						subPatterns: (anObject collect: [ :each | each asMatcher ]) asSubPatternWrapper;
-						yourself ]
-				ifFalse: [ PTLMatcherSubPattern new
-						subPatterns: {anObject asMatcher asSubPatternWrapper};
-						yourself ])
+		  withClass: self
+		  withConfiguration:
+			  ((anObject isCollection and: [ anObject isString not ])
+				   ifTrue: [ 
+				   (anObject collect: [ :each | each asMatcher ])
+					   asSubPatternWrapper ]
+				   ifFalse: [ { anObject asMatcher asSubPatternWrapper } ])
 ]
 
 { #category : #'*PharoTransformationLanguage' }

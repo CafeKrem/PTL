@@ -1,9 +1,6 @@
 Class {
 	#name : #PTLPatternMatcherTest,
 	#superclass : #TestCase,
-	#instVars : [
-		'matcher'
-	],
 	#category : #'PharoTransformationLanguage-Tests-tests'
 }
 
@@ -72,6 +69,11 @@ PTLPatternMatcherTest >> methodTestBinOp [
 { #category : #example }
 PTLPatternMatcherTest >> methodTestBinOp1 [
 	10 + 5
+]
+
+{ #category : #'as yet unclassified' }
+PTLPatternMatcherTest >> methodTestBinOp3 [
+	100 + 100  
 ]
 
 { #category : #tests }
@@ -331,6 +333,18 @@ PTLPatternMatcherTest >> testIntegerMatcher [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testJoker3 [
+	| pattern matcherResult  |
+	pattern := { 1. 2 . 3. #'@klm'  . 5 . 6 } asMatcher.
+	
+	matcherResult := (pattern match: {1 . 2 . 3 . 4 . 5 . 6}).
+	
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #klm) equals: 4
+ 
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcher [
 
 	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut |
@@ -479,7 +493,7 @@ PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 { #category : #tests }
 PTLPatternMatcherTest >> testMatchSavedAssociation [
 
-	| matchResult1 matchResult2 matchResult3 |
+	| matchResult1 matchResult2 matchResult3 matcher | 
 	matcher := RBSequenceNode suchAs:
 		           { { (#statements
 		            -> ((RBReturnNode suchAs: { '4' }) named: #a)) } }
@@ -717,4 +731,25 @@ PTLPatternMatcherTest >> testStringMatcher2 [
 
 	self assert: a isMatch.
 	self assert: b isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testTwiceMatchShouldNotModifyAST [
+
+	"this is a non regression test"
+
+	| pattern model matcherResult |
+	pattern := { (RBSequenceNode suchAs:
+		            { (#statements -> (RBMessageNode suchAs: { 
+				              (#receiver -> (PTLJokerMatcher new named: #x)).
+				              (#selector -> '+').
+				              (#arguments -> (PTLJokerMatcher new named: #x)) })) }) }
+		           asMatcher.
+	model := self productFASTPharo:
+		         PTLPatternMatcherTest >> #methodTestBinOp3.
+
+	matcherResult := pattern match: model.
+	self assert: matcherResult isMatch.
+	self deny: model statements isEmpty.
+	self assert: (pattern match: model) isMatch
 ]

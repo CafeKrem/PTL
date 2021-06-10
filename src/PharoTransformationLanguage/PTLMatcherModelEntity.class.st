@@ -1,9 +1,36 @@
+"
+Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
+
+For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
+
+For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
+
+For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
+
+Public API and Key Messages
+
+- message one   
+- message two 
+- (for bonus points) how to create instances.
+
+for examples see my subclasses documentations or look at tests.
+ 
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	nacBlock:		<Block>
+	next:		<Matcher>
+	previous:		<Matcher>
+	savedSelector:		<Symbol>
+
+
+    Implementation Points
+"
 Class {
 	#name : #PTLMatcherModelEntity,
 	#superclass : #Object,
 	#instVars : [
 		'next',
-		'matchedNodes',
 		'savedSelector',
 		'previous',
 		'nacBlock'
@@ -23,20 +50,20 @@ PTLMatcherModelEntity >> asMatcher [
 
 { #category : #converting }
 PTLMatcherModelEntity >> asSubPatternWrapper [
-	^ PTLMatcherSubPatternWrapper new
+	^ PTLMatcherSubPattern new
 		matcherModel: self;
 		yourself
 ]
 
 { #category : #util }
-PTLMatcherModelEntity >> firstElementOf: aCollection [
-	aCollection isString
-		ifTrue: [ ^ aCollection ].
-	aCollection isCollection
-		ifTrue: [ aCollection first isCharacter
-				ifTrue: [ ^ aCollection ]
-				ifFalse: [ ^ aCollection first ] ].
-	^ aCollection
+PTLMatcherModelEntity >> firstElementOf: aValue [
+	aValue isString
+		ifTrue: [^ aValue ].
+	aValue isCollection
+		ifTrue: [ aValue first isCharacter
+				ifTrue: [ ^ aValue ]
+				ifFalse: [ ^ aValue first ] ].
+	^ aValue
 ]
 
 { #category : #'private-running' }
@@ -50,6 +77,14 @@ PTLMatcherModelEntity >> hasNext [
 	^ next isNotNil
 ]
 
+{ #category : #hook }
+PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
+
+	"you can overide me to add specific verification. for saving in context your matched value."
+
+	self save: (self pop: aValue) inContext: aContext
+]
+
 { #category : #testing }
 PTLMatcherModelEntity >> isEllipsis [
 	^ false
@@ -58,6 +93,18 @@ PTLMatcherModelEntity >> isEllipsis [
 { #category : #testing }
 PTLMatcherModelEntity >> isJoker [
 	^ false
+]
+
+{ #category : #action }
+PTLMatcherModelEntity >> jokerHasMatch: aValue [
+
+	^ true
+]
+
+{ #category : #testing }
+PTLMatcherModelEntity >> jokerHasMatch: aValue withNext: aNext withContext: aContext [
+
+	^ true
 ]
 
 { #category : #transformationLanguage }
@@ -78,22 +125,13 @@ PTLMatcherModelEntity >> match: aValue [
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> match: aCollection withContext: aContext [
-
-	| aValue |
+	"I'm defining a commun behavior for every matcher"
+	| value |
 	aCollection isCollection ifTrue: [ aCollection ifEmpty: [ ^ false ] ].
-	aValue := self firstElementOf: aCollection.
-	^ (self hasMatch: aValue withContext: aContext)
+	value := self firstElementOf: aCollection.
+	^ (self hasMatch: value withContext: aContext)
 		  ifTrue: [ 
-			  aCollection isCollection
-				  ifTrue: [ 
-					  aCollection first isCharacter
-						  ifTrue: [ 
-							  aCollection removeAll: self value.
-							  self flag: #moveIt ]
-						  ifFalse: [ 
-						  self save: (self pop: aCollection) inContext: aContext ] ]
-				  ifFalse: [ 
-				  self save: (self pop: aCollection) inContext: aContext ].
+			  self hookSaveAction: aCollection withContext: aContext.
 			  true ]
 		  ifFalse: [ false ]
 ]
@@ -108,37 +146,37 @@ PTLMatcherModelEntity >> next [
 	^ next
 ]
 
-{ #category : #accessor }
+{ #category : #accessing }
 PTLMatcherModelEntity >> next: aMatcher [
 	next := aMatcher
 ]
 
 { #category : #util }
-PTLMatcherModelEntity >> pop: aCollection [
-	aCollection isString
-		ifTrue: [ ^ aCollection ].
-	aCollection isCollection
-		ifTrue: [ aCollection first isCharacter
-				ifTrue: [ ^ aCollection ]
-				ifFalse: [ ^ aCollection removeFirst ] ].
-	^ aCollection
+PTLMatcherModelEntity >> pop: aValue [
+
+	aValue isString ifTrue: [ ^ aValue ].
+	aValue isCollection ifTrue: [ 
+		aValue first isCharacter
+			ifTrue: [ ^ aValue ]
+			ifFalse: [ ^ aValue removeFirst ] ].
+	^ aValue
 ]
 
-{ #category : #accessor }
+{ #category : #accessing }
 PTLMatcherModelEntity >> previous: aMatcher [
 	previous := aMatcher
 ]
 
 { #category : #'private-running' }
-PTLMatcherModelEntity >> save: aCollection inContext: aContext [
+PTLMatcherModelEntity >> save: aValue inContext: aContext [
 	savedSelector
-		ifNotNil: [ aCollection isCollection
-				ifTrue: [ aCollection first isCharacter
-						ifTrue: [ ^ aContext at: savedSelector put: ('' join: aCollection) ] ].
-			^ aContext at: savedSelector put: aCollection ]
+		ifNotNil: [ aValue isCollection
+				ifTrue: [ aValue first isCharacter
+						ifTrue: [ ^ aContext at: savedSelector put: ('' join: aValue) ] ].
+			^ aContext at: savedSelector put: aValue ]
 ]
 
-{ #category : #accessor }
-PTLMatcherModelEntity >> savedSelector: aString [
-	savedSelector := aString
+{ #category : #accessing }
+PTLMatcherModelEntity >> savedSelector: aSymbol [
+	savedSelector := aSymbol
 ]
