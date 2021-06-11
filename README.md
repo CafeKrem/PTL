@@ -118,8 +118,7 @@ pattern := #'16..31' asMatcher.  ""
 
 I modelise on GenMyModel the class hierarchy. 
 
-https://app.genmymodel.com/api/repository/Clement%20Dutriez/PTLPatternMatchingModel
-
+https://app.genmymodel.com/api/repository/Clement%20Dutriez/PTLPatternMatchingModelUML
 
 ### root of the model
 
@@ -163,3 +162,7 @@ this method is responsible of saving aValue if there is a selector into aMatcher
 ### how to add a new matcher
 
 in order to do this you just have to create an object subclass of MatcherModelEntity.
+
+### hierarchy
+
+![](picture/hierarchy.jpeg)
