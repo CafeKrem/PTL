@@ -121,4 +121,41 @@ I modelise on GenMyModel the class hierarchy.
 https://app.genmymodel.com/api/repository/Clement%20Dutriez/PTLPatternMatchingModel
 
 
+### root of the model
 
+This picture contains 2 important Object , **MatcherModelEntity** the root of the metaModel of pattern matching , and **MatcherResult** the Object return by the pattern when it match.
+
+![](picture/rootModel.jpeg)
+
+#### MatcherResult
+
+It return by the pattern when it match. 
+It will contains every matched Object.
+
+#### MatcherModelEntity
+
+**MatcherModelEntity** define many operations:
+
+###  match: anObjectToMatch
+
+it's the entry point of the API it will be use by the client.
+t's return a **MatcherResult**
+anObjectToMatch is convert as collection in order to be able to iterate on it.
+
+
+### match: anObjectToMatch withContext: aMatcherResult
+
+aMatcherResult is transmit by parameter in order to store matched object.
+return a Boolean.
+
+this method is responsible of asking if it's match.
+If it match so it will store the the matched value and pop from the collection.
+
+### hasMatch: anObjectToMatch withContext: aMatcherResult
+
+return a boolean true if it match else false.
+my subclasses have to implement me.
+
+### save: aValue inContext: aMatcherResult
+
+this method is responsible of saving aValue if there is a selector into aMatcherResult.
