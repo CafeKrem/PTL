@@ -116,6 +116,9 @@ pattern := #'16..31' asMatcher.  ""
 
 ## how to use it as maintener
 
+I modelise on GenMyModel the class hierarchy. 
+
+https://app.genmymodel.com/api/repository/Clement%20Dutriez/PTLPatternMatchingModel
 
 
 
