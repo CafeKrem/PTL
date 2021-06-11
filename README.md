@@ -159,3 +159,7 @@ my subclasses have to implement me.
 ### save: aValue inContext: aMatcherResult
 
 this method is responsible of saving aValue if there is a selector into aMatcherResult.
+
+### how to add a new matcher
+
+in order to do this you just have to create an object subclass of MatcherModelEntity.
