@@ -1,3 +1,13 @@
+"
+I'm an abstract class for Literal Matcher.
+
+ 
+    Instance Variables
+	value:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #PTLMatcherLiteralEntity,
 	#superclass : #PTLMatcherModelEntity,

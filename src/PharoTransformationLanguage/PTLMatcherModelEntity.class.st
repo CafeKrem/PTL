@@ -1,18 +1,24 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
 
-For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
+I'm an abstract class , I define commun behavior for pattern. and I defined an API.
 
-For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
 
 For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
 
-Public API and Key Messages
 
-- message one   
-- message two 
-- (for bonus points) how to create instances.
+my private API's are:
 
+* #match:withContext: , I'm returning a boolean if I can match my input.
+* #hasMatch:withContext:  , I'm abtract my subclasses have to define a method , I'm returning a boolean if I can match my input with eating my input.
+* #save:inContext: , I responsible of eating my input. 
+
+my public API are: 
+
+* named: , I'm putting a selector in order to save at this selector with the context if I match.
+* like: 
+* match: , I'm the entry point for matching.
+ 
 for examples see my subclasses documentations or look at tests.
  
 Internal Representation and Key Implementation Points.
@@ -37,6 +43,12 @@ Class {
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
+
+{ #category : #testing }
+PTLMatcherModelEntity class >> isAbstract [
+
+	^ self = PTLMatcherModelEntity
+]
 
 { #category : #visiting }
 PTLMatcherModelEntity >> acceptVisitor: aVisitor [
@@ -127,7 +139,9 @@ PTLMatcherModelEntity >> match: aValue [
 
 { #category : #'private-running' }
 PTLMatcherModelEntity >> match: aCollection withContext: aContext [
+
 	"I'm defining a commun behavior for every matcher"
+
 	| value |
 	aCollection isCollection ifTrue: [ aCollection ifEmpty: [ ^ false ] ].
 	value := self firstElementOf: aCollection.
