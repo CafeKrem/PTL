@@ -799,6 +799,15 @@ PTLPatternMatcherTest >> testStringMatcher2 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testStringMatcher3 [
+	| pattern matchResult |
+	pattern :=  { 'get' . #'*truc'  . '()' } asMatcher.
+	matchResult :=  pattern match:  'getLabel()'.
+	self assert: matchResult isMatch.
+	self assert: (matchResult at: #truc) equals: 'Label'
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testTwiceMatchShouldNotModifyAST [
 
 	"this is a non regression test"

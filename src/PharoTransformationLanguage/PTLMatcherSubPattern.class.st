@@ -1,3 +1,16 @@
+"
+I'm a util Object I'm used by matcherModelReference. 
+
+I should not be use alone.
+
+
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	matcherModel:		<MatcherModelEntity> , it's contains a matcher.
+	selector:		<Symbol> it's representing the name of an instanceVariable/class Variable or a method if IV or CV with selector dosn't exist.
+
+"
 Class {
 	#name : #PTLMatcherSubPattern,
 	#superclass : #PTLMatcherModelEntity,

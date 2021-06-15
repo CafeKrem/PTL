@@ -1,3 +1,19 @@
+"
+I'm representing a  single character matcher without condition.
+
+
+example 
+
+```language=Pharo
+	|pattern|
+   pattern := #'@klm'  asMatcher.
+	(pattern match: 'jiop') at: #klm. ""'jiop'""
+	
+	  pattern :=  { 1 . 3 . 4  #'@klm'  } asMatcher.
+	(pattern match: {1 . 3 . 4  . 5 }) at: #klm. ""5""
+	
+```
+"
 Class {
 	#name : #PTLJokerMatcher,
 	#superclass : #PTLMatcherModelEntity,

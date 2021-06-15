@@ -1,3 +1,22 @@
+"
+I'm a range Matcher I match if input is between from and to.
+
+example
+
+```language=Pharo
+	|pattern|
+	  pattern := #1..32 named: #x
+	(pattern match: 15) at: #klm. ""15""
+``` 
+
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	from:		<Integer>
+	to:		<Integer>
+
+
+"
 Class {
 	#name : #PTLRangeMatcher,
 	#superclass : #PTLMatcherModelEntity,

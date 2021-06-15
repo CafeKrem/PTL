@@ -1,3 +1,24 @@
+"
+I'm a matcher for any Object I'm containing the class of the Object and a description of it.
+
+example: 
+
+
+```language=Pharo
+	|pattern|
+	  pattern := RBSequenceNode suchAs:
+		           { (#statements -> (RBReturnNode named: #klm)) }
+			           asMatcher.
+	((pattern match: [^ 15] sourceNode) at: #klm) value. ""15""
+	
+```
+
+    Instance Variables
+	configuration:		<PTLMatcherSubPattern> , it will contains the description of the object that want to match.
+	modelDescription:	<Class> , the description of the object that we want to match.
+
+
+"
 Class {
 	#name : #PTLMatcherModelReference,
 	#superclass : #PTLMatcherModelEntity,

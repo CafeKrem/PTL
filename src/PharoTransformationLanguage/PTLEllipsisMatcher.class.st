@@ -63,10 +63,19 @@ PTLEllipsisMatcher >> match: aValue withContext: aContext [
 		ifNotNil: [ [ aValue isEmpty
 				or:
 					[ isNextMatch := next hasMatch: aValue withContext: aContext ] ]
-				whileFalse: [ value := self pop: aValue.
+				whileFalse: [value := self pop: aValue.
 					matchedNodes add: value ].
 			self save: matchedNodes inContext: aContext ].
 	^ isNextMatch
+]
+
+{ #category : #util }
+PTLEllipsisMatcher >> pop: aValue [
+	aValue isString
+		ifTrue: [ ^ aValue ].
+	aValue isCollection
+		ifTrue: [ ^ aValue removeFirst ].
+	^ aValue
 ]
 
 { #category : #'private-running' }
