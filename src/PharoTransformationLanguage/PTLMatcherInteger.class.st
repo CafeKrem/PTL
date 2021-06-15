@@ -16,6 +16,12 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #visitor }
+PTLMatcherInteger >> accept: aVisitor [
+
+	^ aVisitor visitIntegerMatcher: self
+]
+
 { #category : #action }
 PTLMatcherInteger >> rangeMatch: anInteger withContext: aContext [
 	^ value

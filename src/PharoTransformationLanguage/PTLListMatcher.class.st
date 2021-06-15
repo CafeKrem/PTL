@@ -26,6 +26,11 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #visitor }
+PTLListMatcher >> accept: aVisitor [
+	^aVisitor visitListMatcher: self
+]
+
 { #category : #hook }
 PTLListMatcher >> hookSaveAction: aValue withContext: aContext [
 
@@ -45,6 +50,11 @@ PTLListMatcher >> match: aValue withContext: aContext [
 	isMatched ifTrue: [ 
 		self hookSaveAction: aValue withContext: aContext ].
 	^ isMatched
+]
+
+{ #category : #accessor }
+PTLListMatcher >> matcher [
+	^ matcher
 ]
 
 { #category : #accessor }
