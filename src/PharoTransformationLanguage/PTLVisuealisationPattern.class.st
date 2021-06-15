@@ -63,3 +63,42 @@ PTLVisuealisationPattern >> visitListMatcher: aList [
 		firstModel := eachModel ].
 	^ listBlock
 ]
+
+{ #category : #visit }
+PTLVisuealisationPattern >> visitModelReferenceMatcher: matcherModelReference [
+
+	| firstTL firstModel eachTL eachModel listBlock modelRefenceBlock |
+	1 halt.
+	firstTL := matcherModelReference configuration first accept: self.
+	firstModel := matcherModelReference configuration first.
+	1 halt.
+	modelRefenceBlock := TLBasicBlock title:
+		                     matcherModelReference modelDescription name.
+	memory add: modelRefenceBlock.
+	modelRefenceBlock next: firstTL asOrderedCollection.
+	1 halt.
+	[ firstModel isNotNil and: [ firstModel next isNotNil ] ] whileTrue: [ 
+		eachTL := firstModel next accept: self.
+		eachModel := firstModel next.
+		firstTL next: eachTL asOrderedCollection.
+		"eachTL pred: firstTL."
+		firstTL := eachTL.
+		firstModel := eachModel ].
+
+
+	
+
+	^ modelRefenceBlock
+]
+
+{ #category : #visitr }
+PTLVisuealisationPattern >> visitSubPattern: aSubPattern [
+
+	| block subBlock |
+	block := TLBasicBlock title: aSubPattern selector.
+	memory add: block.
+	subBlock := aSubPattern matcherModel  accept: self.
+
+	block next: subBlock asOrderedCollection.
+	^ block
+]

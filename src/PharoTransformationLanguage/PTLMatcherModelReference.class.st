@@ -37,6 +37,12 @@ PTLMatcherModelReference class >> withClass: aClass withConfiguration: aCollecti
 		yourself
 ]
 
+{ #category : #visitor }
+PTLMatcherModelReference >> accept: aVisitor [
+
+	^ aVisitor visitModelReferenceMatcher: self
+]
+
 { #category : #accessor }
 PTLMatcherModelReference >> configuration [
 	^ configuration
@@ -69,6 +75,11 @@ PTLMatcherModelReference >> match: aValue withContext: aContext [
 				  (self nacBlock argumentNames collect: [ :name | 
 					   aContext at: name ]) ]
 		ifFalse: [ ^ false ]
+]
+
+{ #category : #accesso }
+PTLMatcherModelReference >> modelDescription [
+	^ modelDescription
 ]
 
 { #category : #accessor }

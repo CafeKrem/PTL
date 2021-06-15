@@ -51,8 +51,9 @@ PTLMatcherModelEntity class >> isAbstract [
 ]
 
 { #category : #visitor }
-PTLMatcherModelEntity >> accept: aPTLVisuealisationPattern [ 
-	self subclassResponsibility.
+PTLMatcherModelEntity >> accept: aVisitor [
+
+	^ aVisitor visitSubPattern: self
 ]
 
 { #category : #visiting }

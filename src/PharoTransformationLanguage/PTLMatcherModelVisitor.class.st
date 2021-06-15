@@ -13,3 +13,8 @@ PTLMatcherModelVisitor >> visitIntegerMatcher: aVisitor [
 PTLMatcherModelVisitor >> visitListMatcher: aPTLListMatcher [ 
 	self subclassResponsibility 
 ]
+
+{ #category : #visit }
+PTLMatcherModelVisitor >> visitModelReferenceMatcher: aPTLMatcherModelReference [ 
+	self subclassResponsibility
+]
