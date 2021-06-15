@@ -169,9 +169,12 @@ PTLMatcherModelEntity >> next: aMatcher [
 
 { #category : #util }
 PTLMatcherModelEntity >> pop: aValue [
-
-	aValue isString ifTrue: [ ^ aValue ].
-	aValue isCollection ifTrue: [ ^ aValue removeFirst ].
+	aValue isString
+		ifTrue: [ ^ aValue ].
+	aValue isCollection
+		ifTrue: [ aValue first isCharacter
+				ifTrue: [ ^ aValue ]
+				ifFalse: [ ^ aValue removeFirst ] ].
 	^ aValue
 ]
 

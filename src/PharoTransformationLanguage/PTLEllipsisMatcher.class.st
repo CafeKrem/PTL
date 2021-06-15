@@ -69,6 +69,15 @@ PTLEllipsisMatcher >> match: aValue withContext: aContext [
 	^ isNextMatch
 ]
 
+{ #category : #util }
+PTLEllipsisMatcher >> pop: aValue [
+	aValue isString
+		ifTrue: [ ^ aValue ].
+	aValue isCollection
+		ifTrue: [ ^ aValue removeFirst ].
+	^ aValue
+]
+
 { #category : #'private-running' }
 PTLEllipsisMatcher >> save: aValue inContext: aContext [
 
