@@ -29,8 +29,11 @@ PTLMatcherLiteralEntity >> hasMatch: aValue withContext: aContext [
 	| aFirstValue |
 	aFirstValue := self firstElementOf: aValue.
 	^ value = aFirstValue or: [ 
-		  (aFirstValue class allSlots collect: [ :each | 
-			   each read: aFirstValue ]) anySatisfy: [ :each | each = value ] ]
+		  aFirstValue isCharacter
+			  ifTrue: [ false ]
+			  ifFalse: [ 
+				  (aFirstValue class allSlots collect: [ :each | 
+					   each read: aFirstValue ]) anySatisfy: [ :each | each = value ] ] ]
 ]
 
 { #category : #accessing }

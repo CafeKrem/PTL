@@ -63,7 +63,7 @@ PTLEllipsisMatcher >> match: aValue withContext: aContext [
 		ifNotNil: [ [ aValue isEmpty
 				or:
 					[ isNextMatch := next hasMatch: aValue withContext: aContext ] ]
-				whileFalse: [ value := self pop: aValue.
+				whileFalse: [value := self pop: aValue.
 					matchedNodes add: value ].
 			self save: matchedNodes inContext: aContext ].
 	^ isNextMatch

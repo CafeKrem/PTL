@@ -171,10 +171,7 @@ PTLMatcherModelEntity >> next: aMatcher [
 PTLMatcherModelEntity >> pop: aValue [
 
 	aValue isString ifTrue: [ ^ aValue ].
-	aValue isCollection ifTrue: [ 
-		aValue first isCharacter
-			ifTrue: [ ^ aValue ]
-			ifFalse: [ ^ aValue removeFirst ] ].
+	aValue isCollection ifTrue: [ ^ aValue removeFirst ].
 	^ aValue
 ]
 
