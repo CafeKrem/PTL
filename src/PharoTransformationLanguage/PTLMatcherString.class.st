@@ -2,6 +2,14 @@
 I'm responsible of matching String.
 
 I'm redefining hasMatch:withContext: because I can match substring of a string give in input.
+
+
+```language=Pharo
+	|pattern|
+	  pattern := 'klm' named: #klm .
+	(pattern match: 'klm') at: #klm. ""klm""
+	
+```
 "
 Class {
 	#name : #PTLMatcherString,
