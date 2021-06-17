@@ -44,8 +44,10 @@ PTLMatcherSubPattern >> hasMatch: aValue withContext: aContext [
 					                    eachSelector asSymbol) read: attributeTmp ]
 					                   on: Error
 					                   do: [ 
-					                   attributeTmp perform: eachSelector asSymbol ])
-					                  copy convertToCollection ].
+						                   [ 
+						                   attributeTmp perform: eachSelector asSymbol ]
+							                   on: Error
+							                   do: [ ^ false ] ]) copy convertToCollection ].
 
 			  matcherModel match: attributeTmp withContext: aContext ]
 ]

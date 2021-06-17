@@ -343,6 +343,16 @@ PTLPatternMatcherTest >> testDirectPath [
 pattern := RBMessageNode  suchAs: { #'receiver > class ' -> Class }  .
 
 self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testDirectPath1 [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
+
+self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
 ]
 
 { #category : #tests }
