@@ -337,7 +337,6 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
-
 PTLPatternMatcherTest >> testDirectPath [
 
 | pattern |
@@ -355,6 +354,7 @@ pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } 
 
 self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
 
+{ #category : #tests }
 PTLPatternMatcherTest >> testContainerMatcher6 [
 
 	self
