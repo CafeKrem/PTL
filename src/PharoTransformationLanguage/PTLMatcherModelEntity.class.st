@@ -99,6 +99,12 @@ PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
 	self save: (self pop: aValue) inContext: aContext
 ]
 
+{ #category : #API }
+PTLMatcherModelEntity >> isContained [
+
+	^ PTLContainerMatcher element: self
+]
+
 { #category : #testing }
 PTLMatcherModelEntity >> isEllipsis [
 	^ false

@@ -307,6 +307,36 @@ PTLPatternMatcherTest >> testContainerMatcher4 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher5API [
+
+	| patternPatate patternCarote pattern |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+		                  (Pragma suchAs: { (#selector -> #patate) })
+			                  isContained) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas -> (Pragma suchAs: { 
+				                   (#selector -> #carote:).
+				                   (#arguments -> #rouge isContained) })
+			                  isContained) }.
+
+	pattern := Object suchAs: { 
+			           (#x -> 100).
+			           (#class -> Class suchAs:
+				            { (#slotNames -> { #x. #y } isContained) }) }.
+
+	self assert: (pattern match: 100 @ 0) isMatch.
+	self deny: (pattern match: 50 @ 100) isMatch.
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |

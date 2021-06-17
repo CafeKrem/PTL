@@ -24,3 +24,9 @@ Collection >> asSubPatternWrapper [
 Collection >> convertToCollection [
 	^ self asOrderedCollection 
 ]
+
+{ #category : #'*PharoTransformationLanguage' }
+Collection >> isContained [
+
+	^ PTLContainerMatcher elements: self
+]
