@@ -15,10 +15,23 @@ PTLContainerMatcher class >> element: anObject [
 		  yourself
 ]
 
+{ #category : #instantiation }
+PTLContainerMatcher class >> elements: aCollection [
+
+	^ self new
+		  elements: (aCollection collect: #asMatcher);
+		  yourself
+]
+
 { #category : #accessor }
 PTLContainerMatcher >> element: aMatcher [
 
-	elementMatcher := aMatcher
+	elementMatcher := aMatcher asOrderedCollection
+]
+
+{ #category : #accessor }
+PTLContainerMatcher >> elements: aCollection [ 
+	elementMatcher := aCollection  
 ]
 
 { #category : #'private-running' }
@@ -26,8 +39,9 @@ PTLContainerMatcher >> hasMatch: aValue withContext: aContext [
 
 	"return boolean , true if I can match with my argument aValue else false."
 
-	^ aValue anySatisfy: [ :each | 
-		  elementMatcher hasMatch: each withContext: aContext ]
+	^ elementMatcher allSatisfy: [ :matcher | 
+		  aValue anySatisfy: [ :each | 
+			  matcher hasMatch: each withContext: aContext ] ]
 ]
 
 { #category : #'private-running' }
@@ -36,8 +50,8 @@ PTLContainerMatcher >> match: aValue withContext: aContext [
 	aValue isEmpty ifTrue: [ ^ false ].
 
 	^ (self hasMatch: aValue withContext: aContext)
-		ifTrue: [ 
-			self hookSaveAction: aValue withContext: aContext.
-			true ]
-		ifFalse: [ false ]
+		  ifTrue: [ 
+			  self hookSaveAction: aValue withContext: aContext.
+			  true ]
+		  ifFalse: [ false ]
 ]

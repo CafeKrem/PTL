@@ -2,9 +2,10 @@ Extension { #name : #Class }
 
 { #category : #'*PharoTransformationLanguage' }
 Class >> asMatcher [
+
 	^ PTLMatcherModelReference
-		withClass: self
-		withConfiguration: OrderedCollection new
+		  withClass: self
+		  withConfiguration: OrderedCollection new
 ]
 
 { #category : #'*PharoTransformationLanguage' }

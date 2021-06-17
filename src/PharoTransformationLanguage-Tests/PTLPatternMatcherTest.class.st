@@ -252,6 +252,18 @@ PTLPatternMatcherTest >> testContainerMatcher1 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher2 [
+
+	| pattern |
+	pattern := Class suchAs:
+		           { (#slotNames
+		            -> (PTLContainerMatcher elements: { #x. #y })) }.
+
+	self assert: (pattern match: Point) isMatch.
+	self deny: (pattern match: Class) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
