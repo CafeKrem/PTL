@@ -227,6 +227,21 @@ PTLPatternMatcherTest >> testBinOp [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher [
+
+	| pattern |
+	pattern := PTLContainerMatcher element: 100.
+
+	self assert: (pattern match: { 100 }) isMatch.
+	self assert: (pattern match: { 1. 5. 7. 100 }) isMatch.
+	self assert: (pattern match: { 100. 5. 4 }) isMatch.
+	self assert: (pattern match: { 1. 100. 4 }) isMatch.
+	self deny: (pattern match: {  }) isMatch.
+	self deny: (pattern match: { 1. 23. 443. 53. 21. 2 }) isMatch.
+	self deny: (pattern match: { 'lk'. '100' }) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
