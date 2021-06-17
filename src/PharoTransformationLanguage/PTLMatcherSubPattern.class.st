@@ -16,7 +16,8 @@ Class {
 	#superclass : #PTLMatcherModelEntity,
 	#instVars : [
 		'selector',
-		'matcherModel'
+		'matcherModel',
+		'selectors'
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
@@ -30,18 +31,28 @@ PTLMatcherSubPattern >> asSubPatternWrapper [
 PTLMatcherSubPattern >> hasMatch: aValue withContext: aContext [
 
 	| attributeTmp |
-	^ selector
-		  ifNil: [ 
+	^ selectors
+		  ifEmpty: [ 
 			  (matcherModel match: aValue withContext: aContext) or: [ 
 				  aValue children anySatisfy: [ :child | 
 					  matcherModel match: child withContext: aContext ] ] ]
-		  ifNotNil: [ 
-			  attributeTmp := ([ 
-			                   (aValue class slotNamed: selector) read: aValue ]
-				                   on: Error
-				                   do: [ aValue perform: selector ]) copy
-				                  convertToCollection.
+		  ifNotEmpty: [ 
+			  attributeTmp := aValue.
+			  selectors do: [ :eachSelector | 
+				  attributeTmp := ([ 
+				                   (attributeTmp class slotNamed:
+					                    eachSelector asSymbol) read: attributeTmp ]
+					                   on: Error
+					                   do: [ 
+					                   attributeTmp perform: eachSelector asSymbol ])
+					                  copy convertToCollection ].
+
 			  matcherModel match: attributeTmp withContext: aContext ]
+]
+
+{ #category : #initialization }
+PTLMatcherSubPattern >> initialize [ 
+	selectors := OrderedCollection new
 ]
 
 { #category : #accessor }
@@ -62,4 +73,9 @@ PTLMatcherSubPattern >> selector [
 { #category : #accessor }
 PTLMatcherSubPattern >> selector: aString [
 	selector := aString
+]
+
+{ #category : #accessor }
+PTLMatcherSubPattern >> selectors: aCollection [ 
+	selectors addAll: aCollection
 ]

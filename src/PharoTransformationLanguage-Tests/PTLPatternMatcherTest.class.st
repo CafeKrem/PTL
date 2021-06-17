@@ -337,6 +337,15 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testDirectPath [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class ' -> Class }  .
+
+self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
