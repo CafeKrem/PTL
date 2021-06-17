@@ -337,6 +337,14 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher6 [
+
+	self
+		assert: ((#( * + - ) isContained match: #*) isMatch)
+		equals: (#( * + - ) contains: [:each | each  = #*])
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
@@ -477,7 +485,7 @@ PTLPatternMatcherTest >> testJokerMatcher [
 	pattern1Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #'@joker'. 100 }) } asMatcher.
 	pattern2Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #'@first'. #*. #'@last' }) }
+		                   { (#statements -> { #'@first'. #'*_'. #'@last' }) }
 			                   asMatcher.
 	pattern3Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #_. 2. 99 }) } asMatcher.
