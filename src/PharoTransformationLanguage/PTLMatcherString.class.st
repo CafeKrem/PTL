@@ -17,6 +17,14 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #instantiation }
+PTLMatcherString class >> value: aCharacter [
+
+	^ self new
+		  value: aCharacter;
+		  yourself
+]
+
 { #category : #'private-running' }
 PTLMatcherString >> hasMatch: aValue withContext: aContext [
 	^ (super hasMatch: aValue withContext: aContext)

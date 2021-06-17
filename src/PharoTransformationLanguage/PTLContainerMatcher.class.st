@@ -39,7 +39,7 @@ PTLContainerMatcher >> hasMatch: aValue withContext: aContext [
 
 	"return boolean , true if I can match with my argument aValue else false."
 
-	^ elementMatcher allSatisfy: [ :matcher | 
+	^ elementMatcher anySatisfy: [ :matcher | 
 		  aValue anySatisfy: [ :each | 
 			  matcher hasMatch: each withContext: aContext ] ]
 ]
