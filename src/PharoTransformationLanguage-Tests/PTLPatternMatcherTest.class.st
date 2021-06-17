@@ -152,6 +152,12 @@ PTLPatternMatcherTest >> methodTestMultipleChildrenNamed2 [
 		t
 ]
 
+{ #category : #'as yet unclassified' }
+PTLPatternMatcherTest >> methodTestPragma [
+	<patate>
+	<carote: #( #rouge #orange)>
+]
+
 { #category : #example }
 PTLPatternMatcherTest >> methodTestReturnLiteral4 [
 	^ '4'
@@ -275,6 +281,29 @@ PTLPatternMatcherTest >> testContainerMatcher3 [
 
 	self assert: (pattern match: 100 @ 0) isMatch.
 	self deny: (pattern match: 50 @ 100) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher4 [
+
+	| patternPatate patternCarote |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas -> (PTLContainerMatcher element:
+			                   (Pragma suchAs: { (#selector -> #patate) }))) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+			                  (PTLContainerMatcher element: (Pragma suchAs: { 
+						                    (#selector -> #carote:).
+						                    (#arguments
+						                     -> (PTLContainerMatcher element: #rouge)) }))) }.
+
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
 ]
 
 { #category : #tests }
