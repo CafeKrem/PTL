@@ -152,6 +152,12 @@ PTLPatternMatcherTest >> methodTestMultipleChildrenNamed2 [
 		t
 ]
 
+{ #category : #'as yet unclassified' }
+PTLPatternMatcherTest >> methodTestPragma [
+	<patate>
+	<carote: #( #rouge #orange)>
+]
+
 { #category : #example }
 PTLPatternMatcherTest >> methodTestReturnLiteral4 [
 	^ '4'
@@ -224,6 +230,110 @@ PTLPatternMatcherTest >> testBinOp [
 	self assert: matcherResult isMatch.
 	self assert: (matcherResult at: #x) value equals: 10.
 	self deny: (pattern match: model1) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher [
+
+	| pattern |
+	pattern := PTLContainerMatcher element: 100.
+
+	self assert: (pattern match: { 100 }) isMatch.
+	self assert: (pattern match: { 1. 5. 7. 100 }) isMatch.
+	self assert: (pattern match: { 100. 5. 4 }) isMatch.
+	self assert: (pattern match: { 1. 100. 4 }) isMatch.
+	self deny: (pattern match: {  }) isMatch.
+	self deny: (pattern match: { 1. 23. 443. 53. 21. 2 }) isMatch.
+	self deny: (pattern match: { 'lk'. '100' }) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher1 [
+
+	| pattern |
+	pattern :=  (Class suchAs: {#slotNames -> (PTLContainerMatcher element:  #x)}).
+
+	self assert: (pattern match: Point) isMatch.
+	self deny: (pattern match: Class) isMatch.
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher2 [
+
+	| pattern |
+	pattern := Class suchAs:
+		           { (#slotNames
+		            -> (PTLContainerMatcher elements: { #x. #y })) }.
+
+	self assert: (pattern match: Point) isMatch.
+	self deny: (pattern match: Class) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher3 [
+
+	| pattern |
+	pattern := Object suchAs: { 
+			           (#x -> 100).
+			           (#class -> Class suchAs:
+				            { (#slotNames
+				             -> (PTLContainerMatcher elements: { #x. #y })) }) }.
+
+	self assert: (pattern match: 100 @ 0) isMatch.
+	self deny: (pattern match: 50 @ 100) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher4 [
+
+	| patternPatate patternCarote |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas -> (PTLContainerMatcher element:
+			                   (Pragma suchAs: { (#selector -> #patate) }))) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+			                  (PTLContainerMatcher element: (Pragma suchAs: { 
+						                    (#selector -> #carote:).
+						                    (#arguments
+						                     -> (PTLContainerMatcher element: #rouge)) }))) }.
+
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher5API [
+
+	| patternPatate patternCarote pattern |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+		                  (Pragma suchAs: { (#selector -> #patate) })
+			                  isContained) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas -> (Pragma suchAs: { 
+				                   (#selector -> #carote:).
+				                   (#arguments -> #rouge isContained) })
+			                  isContained) }.
+
+	pattern := Object suchAs: { 
+			           (#x -> 100).
+			           (#class -> Class suchAs:
+				            { (#slotNames -> { #x. #y } isContained) }) }.
+
+	self assert: (pattern match: 100 @ 0) isMatch.
+	self deny: (pattern match: 50 @ 100) isMatch.
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
 ]
 
 { #category : #tests }
