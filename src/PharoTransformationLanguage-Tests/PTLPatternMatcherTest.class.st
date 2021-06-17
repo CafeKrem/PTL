@@ -337,6 +337,7 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
+
 PTLPatternMatcherTest >> testDirectPath [
 
 | pattern |
@@ -353,6 +354,13 @@ PTLPatternMatcherTest >> testDirectPath1 [
 pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
 
 self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+
+PTLPatternMatcherTest >> testContainerMatcher6 [
+
+	self
+		assert: ((#( * + - ) isContained match: #*) isMatch)
+		equals: (#( * + - ) contains: [:each | each  = #*])
+
 ]
 
 { #category : #tests }
@@ -496,7 +504,7 @@ PTLPatternMatcherTest >> testJokerMatcher [
 	pattern1Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #'@joker'. 100 }) } asMatcher.
 	pattern2Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #'@first'. #*. #'@last' }) }
+		                   { (#statements -> { #'@first'. #'*_'. #'@last' }) }
 			                   asMatcher.
 	pattern3Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #_. 2. 99 }) } asMatcher.
