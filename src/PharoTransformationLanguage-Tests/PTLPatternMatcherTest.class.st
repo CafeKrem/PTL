@@ -337,11 +337,31 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testDirectPath [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class ' -> Class }  .
+
+self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testDirectPath1 [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
+
+self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testContainerMatcher6 [
 
 	self
 		assert: ((#( * + - ) isContained match: #*) isMatch)
 		equals: (#( * + - ) contains: [:each | each  = #*])
+
 ]
 
 { #category : #tests }
