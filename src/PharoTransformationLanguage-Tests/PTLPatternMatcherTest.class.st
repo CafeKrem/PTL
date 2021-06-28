@@ -337,6 +337,15 @@ PTLPatternMatcherTest >> testContainerMatcher5API [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher6 [
+
+	self
+		assert: ((#( * + - ) isContained match: #*) isMatch)
+		equals: (#( * + - ) contains: [:each | each  = #*])
+
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testDirectPath [
 
 | pattern |
@@ -353,15 +362,6 @@ PTLPatternMatcherTest >> testDirectPath1 [
 pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
 
 self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
-]
-
-{ #category : #tests }
-PTLPatternMatcherTest >> testContainerMatcher6 [
-
-	self
-		assert: ((#( * + - ) isContained match: #*) isMatch)
-		equals: (#( * + - ) contains: [:each | each  = #*])
-
 ]
 
 { #category : #tests }
@@ -460,6 +460,15 @@ PTLPatternMatcherTest >> testEllipsisMatcher2 [
 		((matcherResult at: #after100) collect: [ :each | each value ])
 		hasSameElements: { 42. 50. 26 }.
 	self assert: (matcherResult at: #joker) value equals: 1
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testFunctionalDSL [
+	| externalVariable rule |
+	rule := ((Point named: #value))
+		=> [ :value | externalVariable := value ].
+	rule evaluate: 100 @ 100.
+	self assert: externalVariable equals: 100 @ 100.
 ]
 
 { #category : #tests }

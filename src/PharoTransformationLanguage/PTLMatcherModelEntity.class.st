@@ -50,6 +50,14 @@ PTLMatcherModelEntity class >> isAbstract [
 	^ self = PTLMatcherModelEntity
 ]
 
+{ #category : #FunctionalDSL }
+PTLMatcherModelEntity >> => aBlockClosure [
+	^ PTLFunctionalBlock new
+		matching: self;
+		production: aBlockClosure;
+		yourself
+]
+
 { #category : #visiting }
 PTLMatcherModelEntity >> acceptVisitor: aVisitor [
 	^ self subclassResponsibility
@@ -201,4 +209,13 @@ PTLMatcherModelEntity >> save: aValue inContext: aContext [
 { #category : #accessing }
 PTLMatcherModelEntity >> savedSelector: aSymbol [
 	savedSelector := aSymbol
+]
+
+{ #category : #functionalAPI }
+PTLMatcherModelEntity >> | aPTLMatcherModelReference [
+	^ PTLOrMatcher new
+		matchers:
+			{self.
+			aPTLMatcherModelReference} asOrderedCollection;
+		yourself
 ]
