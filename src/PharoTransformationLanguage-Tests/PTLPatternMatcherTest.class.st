@@ -472,6 +472,19 @@ PTLPatternMatcherTest >> testFunctionalDSL [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testFunctionalDSL2 [
+	| externalVariable rule |
+	externalVariable := false.
+	rule := ((Point named: #value) | {1 . #'*subList' . 100} asMatcher)
+		=> [ externalVariable := true ].
+	rule evaluate: 100 @ 100.
+	self assert: externalVariable equals: true.
+	externalVariable := false.
+	rule evaluate: {1 . 3 . 4 . 5 . 3 . 100}.
+	self assert: externalVariable equals: true
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testIntegerMatcher [
 	| pattern |
 	pattern := 100 asMatcher.

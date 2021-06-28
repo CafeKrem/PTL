@@ -14,7 +14,15 @@ PTLOrMatcher >> => aBlockClosure [
 
 { #category : #match }
 PTLOrMatcher >> match: anObject [
-	^ matchers detect: [ :eachMatcher |(eachMatcher match: anObject) isMatch ]
+	| result |
+	matchers
+		do: [ :eachMatcher | 
+			result := eachMatcher match: anObject.
+			result isMatch
+				ifTrue: [ ^ result ] ].
+	^ PTLMatcherResult new
+		isMatch: false;
+		yourself
 ]
 
 { #category : #accessor }
