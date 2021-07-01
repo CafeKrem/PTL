@@ -11,7 +11,8 @@ PTLFastPharoPatternDSL >> nameAsJoker: aName [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitAssignmentNode: anAssignmentNode [
-	^ anAssignmentNode class
+	1 halt.
+	^ FASTPharoAssignmentExpression class
 		suchAs:
 			{(#variable -> (anAssignmentNode variable acceptVisitor: self)).
 			(#value -> (anAssignmentNode value acceptVisitor: self))}
@@ -22,12 +23,13 @@ PTLFastPharoPatternDSL >> visitLiteralNode: aNode [
 	| valueMatcher |
 	valueMatcher := aNode value asMatcher.
 	(valueMatcher isEllipsis or: [ valueMatcher isJoker ])
-		ifTrue: [ ^ valueMatcher ].
-	^ aNode class suchAs: {(#value -> valueMatcher)}
+		ifTrue: [1 halt.^ valueMatcher ].
+	^ FASTLiteral suchAs: {(#value -> valueMatcher)}
 ]
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitMessageNode: messageNode [
+	1 halt.
 	^ messageNode class suchAs: { 
 		#receiver -> (messageNode receiver acceptVisitor: self).
 		#selector -> messageNode selector.
@@ -37,6 +39,7 @@ PTLFastPharoPatternDSL >> visitMessageNode: messageNode [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitSequenceNode: aSequenceNode [
+	1 halt.
 	^ aSequenceNode class suchAs: { 
 		#statements -> (aSequenceNode statements collect: [ :each | each acceptVisitor: self ])
 	 }
@@ -44,6 +47,7 @@ PTLFastPharoPatternDSL >> visitSequenceNode: aSequenceNode [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitVariableNode: varNode [
+	1 halt.
 	(varNode name beginsWith: '_')
 		ifTrue: [ ^ self nameAsJoker: varNode name allButFirst ].
 	^ varNode class suchAs: {(#name -> varNode name asSymbol)}
