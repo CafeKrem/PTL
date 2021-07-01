@@ -1,3 +1,22 @@
+"
+I'm a matcher containing a list of matcher. 
+
+So I overide #match:withContext: in order to match every subPattern.
+
+
+```language=Pharo
+	|pattern|
+	  pattern :=  {1  . #'*' . 4 } named: #klm asMatcher.
+	(pattern match: {1 . 3 . 4  }) at: #klm. ""OrderedCollection new""
+	
+```
+
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	matcher:		<Object> , the first matcher of my list.
+
+"
 Class {
 	#name : #PTLListMatcher,
 	#superclass : #PTLMatcherModelEntity,
@@ -7,18 +26,24 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
-{ #category : #'private-running' }
-PTLListMatcher >> match: aCollection withContext: aContext [
+{ #category : #hook }
+PTLListMatcher >> hookSaveAction: aValue withContext: aContext [
 
-	| isMatched matcherTmp tmpCollection |
-	tmpCollection := aCollection copy asOrderedCollection.
+	savedSelector ifNotNil: [ aContext at: savedSelector put: aValue ]
+]
+
+{ #category : #'private-running' }
+PTLListMatcher >> match: aValue withContext: aContext [
+
+	| isMatched matcherTmp tmpValue |
+	tmpValue := aValue copy asOrderedCollection.
 	matcherTmp := matcher.
-	isMatched := matcherTmp match: tmpCollection withContext: aContext.
+	isMatched := matcherTmp match: tmpValue withContext: aContext.
 	[ isMatched and: [ matcherTmp hasNext ] ] whileTrue: [ 
-		isMatched := matcherTmp next
-			             match: tmpCollection
-			             withContext: aContext.
+		isMatched := matcherTmp next match: tmpValue withContext: aContext.
 		matcherTmp := matcherTmp next ].
+	isMatched ifTrue: [ 
+		self hookSaveAction: aValue withContext: aContext ].
 	^ isMatched
 ]
 

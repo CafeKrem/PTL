@@ -1,9 +1,6 @@
 Class {
 	#name : #PTLPatternMatcherTest,
 	#superclass : #TestCase,
-	#instVars : [
-		'matcher'
-	],
 	#category : #'PharoTransformationLanguage-Tests-tests'
 }
 
@@ -72,6 +69,11 @@ PTLPatternMatcherTest >> methodTestBinOp [
 { #category : #example }
 PTLPatternMatcherTest >> methodTestBinOp1 [
 	10 + 5
+]
+
+{ #category : #'as yet unclassified' }
+PTLPatternMatcherTest >> methodTestBinOp3 [
+	100 + 100  
 ]
 
 { #category : #tests }
@@ -150,6 +152,12 @@ PTLPatternMatcherTest >> methodTestMultipleChildrenNamed2 [
 		t
 ]
 
+{ #category : #'as yet unclassified' }
+PTLPatternMatcherTest >> methodTestPragma [
+	<patate>
+	<carote: #( #rouge #orange)>
+]
+
 { #category : #example }
 PTLPatternMatcherTest >> methodTestReturnLiteral4 [
 	^ '4'
@@ -222,6 +230,138 @@ PTLPatternMatcherTest >> testBinOp [
 	self assert: matcherResult isMatch.
 	self assert: (matcherResult at: #x) value equals: 10.
 	self deny: (pattern match: model1) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher [
+
+	| pattern |
+	pattern := PTLContainerMatcher element: 100.
+
+	self assert: (pattern match: { 100 }) isMatch.
+	self assert: (pattern match: { 1. 5. 7. 100 }) isMatch.
+	self assert: (pattern match: { 100. 5. 4 }) isMatch.
+	self assert: (pattern match: { 1. 100. 4 }) isMatch.
+	self deny: (pattern match: {  }) isMatch.
+	self deny: (pattern match: { 1. 23. 443. 53. 21. 2 }) isMatch.
+	self deny: (pattern match: { 'lk'. '100' }) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher1 [
+
+	| pattern |
+	pattern :=  (Class suchAs: {#slotNames -> (PTLContainerMatcher element:  #x)}).
+
+	self assert: (pattern match: Point) isMatch.
+	self deny: (pattern match: Class) isMatch.
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher2 [
+
+	| pattern |
+	pattern := Class suchAs:
+		           { (#slotNames
+		            -> (PTLContainerMatcher elements: { #x. #y })) }.
+
+	self assert: (pattern match: Point) isMatch.
+	self deny: (pattern match: Class) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher3 [
+
+	| pattern |
+	pattern := Object suchAs: { 
+			           (#x -> 100).
+			           (#class -> Class suchAs:
+				            { (#slotNames
+				             -> (PTLContainerMatcher elements: { #x. #y })) }) }.
+
+	self assert: (pattern match: 100 @ 0) isMatch.
+	self deny: (pattern match: 50 @ 100) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher4 [
+
+	| patternPatate patternCarote |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas -> (PTLContainerMatcher element:
+			                   (Pragma suchAs: { (#selector -> #patate) }))) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+			                  (PTLContainerMatcher element: (Pragma suchAs: { 
+						                    (#selector -> #carote:).
+						                    (#arguments
+						                     -> (PTLContainerMatcher element: #rouge)) }))) }.
+
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher5API [
+
+	| patternPatate patternCarote pattern |
+	patternPatate := CompiledMethod suchAs:
+		                 { (#pragmas
+		                  ->
+		                  (Pragma suchAs: { (#selector -> #patate) })
+			                  isContained) }.
+	patternCarote := CompiledMethod suchAs:
+		                 { (#pragmas -> (Pragma suchAs: { 
+				                   (#selector -> #carote:).
+				                   (#arguments -> #rouge isContained) })
+			                  isContained) }.
+
+	pattern := Object suchAs: { 
+			           (#x -> 100).
+			           (#class -> Class suchAs:
+				            { (#slotNames -> { #x. #y } isContained) }) }.
+
+	self assert: (pattern match: 100 @ 0) isMatch.
+	self deny: (pattern match: 50 @ 100) isMatch.
+	self assert:
+		(patternPatate match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch.
+	self assert:
+		(patternCarote match: PTLPatternMatcherTest >> #methodTestPragma)
+			isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testContainerMatcher6 [
+
+	self
+		assert: ((#( * + - ) isContained match: #*) isMatch)
+		equals: (#( * + - ) contains: [:each | each  = #*])
+
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testDirectPath [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class ' -> Class }  .
+
+self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testDirectPath1 [
+
+| pattern |
+pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
+
+self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
 ]
 
 { #category : #tests }
@@ -331,6 +471,18 @@ PTLPatternMatcherTest >> testIntegerMatcher [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testJoker3 [
+	| pattern matcherResult  |
+	pattern := { 1. 2 . 3. #'@klm'  . 5 . 6 } asMatcher.
+	
+	matcherResult := (pattern match: {1 . 2 . 3 . 4 . 5 . 6}).
+	
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #klm) equals: 4
+ 
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcher [
 
 	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut |
@@ -353,7 +505,7 @@ PTLPatternMatcherTest >> testJokerMatcher [
 	pattern1Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #'@joker'. 100 }) } asMatcher.
 	pattern2Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #'@first'. #*. #'@last' }) }
+		                   { (#statements -> { #'@first'. #'*_'. #'@last' }) }
 			                   asMatcher.
 	pattern3Shorcut := RBSequenceNode suchAs:
 		                   { (#statements -> { #_. 2. 99 }) } asMatcher.
@@ -479,7 +631,7 @@ PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 { #category : #tests }
 PTLPatternMatcherTest >> testMatchSavedAssociation [
 
-	| matchResult1 matchResult2 matchResult3 |
+	| matchResult1 matchResult2 matchResult3 matcher | 
 	matcher := RBSequenceNode suchAs:
 		           { { (#statements
 		            -> ((RBReturnNode suchAs: { '4' }) named: #a)) } }
@@ -554,6 +706,21 @@ PTLPatternMatcherTest >> testModelReferenceWithMultipleSubPattern [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testNonApplicativeCondition [
+
+	| pattern |
+	pattern := (RBReturnNode
+		            suchAs: { (#value -> RBLiteralValueNode named: #x) }
+		            like: [ :x | x value isString not ]) asMatcher.
+	self
+		assert:
+		((pattern match: ([ ^ 100 ] sourceNode statements at: 1)) at: #x) value
+		equals: 100.
+	self deny:
+		(pattern match: ([ ^ 'klm' ] sourceNode statements at: 1)) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testRBAST [
 
 	| pattern model matchResult patternWithoutParenthesis |
@@ -608,6 +775,71 @@ PTLPatternMatcherTest >> testRBAST [
 		assertCollection:
 		((matchResult at: #whileBlock) statements collect: #value)
 		hasSameElements: { 6 }
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher [
+	| pattern |
+	pattern := PTLRangeMatcher from: 5 to: 10.
+	self assert: (pattern match: 5) isMatch.
+	self assert: (pattern match: 6) isMatch.
+	self assert: (pattern match: 10) isMatch.
+	self deny: (pattern match: 2) isMatch.
+	self deny: (pattern match: 12) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher2 [
+	| pattern |
+	pattern := PTLRangeMatcher from: #'@foo' to: 10.
+	self assert: (pattern match: 5) isMatch.
+	self assert: (pattern match: -5) isMatch.
+	self assert: (pattern match: 0) isMatch.
+	self assert: (pattern match: 10) isMatch.
+	self deny: (pattern match: 12) isMatch.
+	self deny: (pattern match: 20) isMatch.
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher3 [
+	| pattern |
+	pattern := Point
+		suchAs:
+			{(#y -> #'@foo').
+			(#x -> (PTLRangeMatcher from: #'@foo' to: 10))}.
+	self assert: (pattern match: 7 @ 2) isMatch.
+	self assert: (pattern match: 10 @ 2) isMatch.
+	self assert: (pattern match: 10 @ 10) isMatch.
+	self deny: (pattern match: 5 @ 10) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher4 [
+	| pattern |
+	pattern := Point
+		suchAs: {(#x -> (PTLRangeMatcher from: 2 to: 10) named: #res)}.
+	self assert: ((pattern match: 7 @ 2) at: #res) equals: 7.
+	self assert: ((pattern match: 10 @ 2) at: #res) equals: 10.
+	self assert: ((pattern match: 10 @ 10) at: #res) equals: 10.
+	self assert: ((pattern match: 1 @ 10) at: #res) isNil
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testRangeMatcher5 [
+	| pattern pattern2 |
+	pattern := Point
+		suchAs: {(#x -> (PTLRangeMatcher from: 2 to: 10) named: #res)}.
+	pattern2 := Point
+		suchAs: {(#x -> #'2..10' named: #res)}.
+	self assert: ((pattern match: 7 @ 2) at: #res) equals: 7.
+	self assert: ((pattern match: 10 @ 2) at: #res) equals: 10.
+	self assert: ((pattern match: 10 @ 10) at: #res) equals: 10.
+	self assert: ((pattern match: 1 @ 10) at: #res) isNil.
+	
+	self assert: ((pattern2 match: 7 @ 2) at: #res) equals: 7.
+	self assert: ((pattern2 match: 10 @ 2) at: #res) equals: 10.
+	self assert: ((pattern2 match: 10 @ 10) at: #res) equals: 10.
+	self assert: ((pattern2 match: 1 @ 10) at: #res) isNil
 ]
 
 { #category : #tests }
@@ -702,4 +934,34 @@ PTLPatternMatcherTest >> testStringMatcher2 [
 
 	self assert: a isMatch.
 	self assert: b isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testStringMatcher3 [
+	| pattern matchResult |
+	pattern :=  { 'get' . #'*truc'  . '()' } asMatcher.
+	matchResult :=  pattern match:  'getLabel()'.
+	self assert: matchResult isMatch.
+	self assert: (matchResult at: #truc) equals: 'Label'
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testTwiceMatchShouldNotModifyAST [
+
+	"this is a non regression test"
+
+	| pattern model matcherResult |
+	pattern := { (RBSequenceNode suchAs:
+		            { (#statements -> (RBMessageNode suchAs: { 
+				              (#receiver -> (PTLJokerMatcher new named: #x)).
+				              (#selector -> '+').
+				              (#arguments -> (PTLJokerMatcher new named: #x)) })) }) }
+		           asMatcher.
+	model := self productFASTPharo:
+		         PTLPatternMatcherTest >> #methodTestBinOp3.
+
+	matcherResult := pattern match: model.
+	self assert: matcherResult isMatch.
+	self deny: model statements isEmpty.
+	self assert: (pattern match: model) isMatch
 ]

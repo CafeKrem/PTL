@@ -77,8 +77,8 @@ pattern := { (RBSequenceNode suchAs: { (#statements -> {
 	rbAST := RBParser parseExpression: 'a := 5. b:= 5. a + b'.
 	matchResult := pattern match: rbAST.
 	matchResult isMatch. "true"
-	matchResult at: #x. "RBAssignementNode ..."
-	matchResult at: #y ."RBAssignementNode ..."
+	matchResult at: #x. "RBVariableNode ..."
+	matchResult at: #y ."RBVariableNode ..."
 	matchResult at: #message.
 ```
 so to summarize , in order to write pattern matching on Object/element of your metaModel. 
@@ -101,10 +101,68 @@ in this part , there is **#'@x'** and **#'@y'** **x** and **y**  are already use
 Thanks to this it will only match if the value matched in **x** and **y** are equals to the current node. 
 
 
+#### match a range of value 
+
+I match if the matched value is in my range.
+
+```smalltalk
+pattern := #'16..31' asMatcher.  ""
+(pattern match: 16 ) isMatch" true"
+(pattern match: 31 ) isMatch" true"
+(pattern match: 18 ) isMatch" true"
+(pattern match: 0 ) isMatch" false"
+```
 
 
 ## how to use it as maintener
 
+I modelise on GenMyModel the class hierarchy. 
+
+https://app.genmymodel.com/api/repository/Clement%20Dutriez/PTLPatternMatchingModelUML
+
+### root of the model
+
+This picture contains 2 important Object , **MatcherModelEntity** the root of the metaModel of pattern matching , and **MatcherResult** the Object return by the pattern when it match.
+
+![](picture/rootModel.jpeg)
+
+#### MatcherResult
+
+It return by the pattern when it match. 
+It will contains every matched Object.
+
+#### MatcherModelEntity
+
+**MatcherModelEntity** define many operations:
+
+###  match: anObjectToMatch
+
+it's the entry point of the API it will be use by the client.
+t's return a **MatcherResult**
+anObjectToMatch is convert as collection in order to be able to iterate on it.
 
 
+### match: anObjectToMatch withContext: aMatcherResult
 
+aMatcherResult is transmit by parameter in order to store matched object.
+return a Boolean.
+
+this method is responsible of asking if it's match.
+If it match so it will store the the matched value and pop from the collection.
+
+### hasMatch: anObjectToMatch withContext: aMatcherResult
+
+return a boolean true if it match else false.
+my subclasses have to implement me.
+
+### save: aValue inContext: aMatcherResult
+
+this method is responsible of saving aValue if there is a selector into aMatcherResult.
+
+### how to add a new matcher
+
+in order to do this you just have to create an object subclass of MatcherModelEntity.
+
+### hierarchy
+
+![](picture/hierarchy.jpeg)

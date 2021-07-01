@@ -1,3 +1,13 @@
+"
+I'm an abstract class for Literal Matcher.
+
+ 
+    Instance Variables
+	value:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #PTLMatcherLiteralEntity,
 	#superclass : #PTLMatcherModelEntity,
@@ -7,14 +17,23 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #testing }
+PTLMatcherLiteralEntity class >> isAbstract [
+
+	^ self = PTLMatcherLiteralEntity
+]
+
 { #category : #'private-running' }
 PTLMatcherLiteralEntity >> hasMatch: aValue withContext: aContext [
 
 	| aFirstValue |
 	aFirstValue := self firstElementOf: aValue.
 	^ value = aFirstValue or: [ 
-		  (aFirstValue class allSlots collect: [ :each | 
-			   each read: aFirstValue ]) anySatisfy: [ :each | each = value ] ]
+		  aFirstValue isCharacter
+			  ifTrue: [ false ]
+			  ifFalse: [ 
+				  (aFirstValue class allSlots collect: [ :each | 
+					   each read: aFirstValue ]) anySatisfy: [ :each | each = value ] ] ]
 ]
 
 { #category : #accessing }
@@ -23,6 +42,6 @@ PTLMatcherLiteralEntity >> value [
 ]
 
 { #category : #accessing }
-PTLMatcherLiteralEntity >> value: anInteger [ 
-	value := anInteger
+PTLMatcherLiteralEntity >> value: aLiteral [ 
+	value := aLiteral
 ]

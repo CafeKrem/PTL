@@ -3,14 +3,12 @@ Extension { #name : #Association }
 { #category : #'*PharoTransformationLanguage' }
 Association >> asMatcher [
 
-	| wrapper |
-	wrapper := PTLMatcherSubPatternWrapper new
-		           selector: self key;
-		           matcherModel: self value asMatcher;
-		           yourself.
+	| path |
+	path := self key asPTLPath.
+	path matcherModel: self value asMatcher.
 
-	self value = '@' ifTrue: [ wrapper matcherModel named: self key ].
-	^ wrapper
+	self value = '@' ifTrue: [ path matcherModel named: self key ].
+	^ path
 ]
 
 { #category : #'*PharoTransformationLanguage' }

@@ -1,3 +1,24 @@
+"
+I'm a matcher for any Object I'm containing the class of the Object and a description of it.
+
+example: 
+
+
+```language=Pharo
+	|pattern|
+	  pattern := RBSequenceNode suchAs:
+		           { (#statements -> (RBReturnNode named: #klm)) }
+			           asMatcher.
+	((pattern match: [^ 15] sourceNode) at: #klm) value. ""15""
+	
+```
+
+    Instance Variables
+	configuration:		<PTLMatcherSubPattern> , it will contains the description of the object that want to match.
+	modelDescription:	<Class> , the description of the object that we want to match.
+
+
+"
 Class {
 	#name : #PTLMatcherModelReference,
 	#superclass : #PTLMatcherModelEntity,
@@ -28,14 +49,35 @@ PTLMatcherModelReference >> configuration: aCollection [
 
 { #category : #'as yet unclassified' }
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
+
 	| value |
 	value := self firstElementOf: aValue.
 	^ (value isKindOf: modelDescription)
-		ifTrue: [ configuration match: value withContext: aContext ]
-		ifFalse: [ false ]
+		  ifTrue: [ 
+			  configuration allSatisfy: [ :pattern | 
+				  pattern match: value withContext: aContext ] ]
+		  ifFalse: [ false ]
+]
+
+{ #category : #'private-running' }
+PTLMatcherModelReference >> match: aValue withContext: aContext [
+
+	(super match: aValue withContext: aContext)
+		ifTrue: [ 
+			self flag: #tryToConnectToHook.
+			^ self nacBlock valueWithArguments:
+				  (self nacBlock argumentNames collect: [ :name | 
+					   aContext at: name ]) ]
+		ifFalse: [ ^ false ]
 ]
 
 { #category : #accessor }
 PTLMatcherModelReference >> modelDescription: aClass [
 	modelDescription := aClass
+]
+
+{ #category : #accesor }
+PTLMatcherModelReference >> nacBlock [
+
+	^ nacBlock ifNil: [ nacBlock := [ true ] ]
 ]

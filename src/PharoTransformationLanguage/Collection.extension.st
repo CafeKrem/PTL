@@ -19,3 +19,14 @@ Collection >> asMatcher [
 Collection >> asSubPatternWrapper [
 	^ self collect: [ :each | each asSubPatternWrapper ]
 ]
+
+{ #category : #'*PharoTransformationLanguage' }
+Collection >> convertToCollection [
+	^ self asOrderedCollection 
+]
+
+{ #category : #'*PharoTransformationLanguage' }
+Collection >> isContained [
+
+	^ PTLContainerMatcher elements: self
+]
