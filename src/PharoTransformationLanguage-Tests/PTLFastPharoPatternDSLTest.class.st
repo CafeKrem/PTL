@@ -62,20 +62,44 @@ PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 { #category : #tests }
 PTLFastPharoPatternDSLTest >> testMessageSendMatcher [
 
-	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult |
+	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult patternShortcut |
 	patternModel := [ 
 	                [ 
 	                #'*beforeCond'.
 	                #'@condition' ] whileTrue: [ #'*body' ] ] sourceNode.
 	modelFastPharo := (self importFrom:
-		                  PTLFastPharoPatternDSLTest >> #methodTestWhileTrue) collect: [:each | each expression].
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestWhileTrue) collect: [ :each | 
+		                  each expression ].
 	modelFastPharo2 := self importFrom:
 		                   PTLFastPharoPatternDSLTest
 		                   >> #methodTestWhileFalse.
-	pattern := patternModel body acceptVisitor: PTLFastPharoPatternDSL new.
-	matcherResult := pattern  match: modelFastPharo.
+	pattern := patternModel body acceptVisitor:
+		           PTLFastPharoPatternDSL new.
+	matcherResult := pattern match: modelFastPharo.
 	self assert: matcherResult isMatch.
-	self assert: (matcherResult at: #condition) expression receiver value equals: 3.
+	self
+		assert: (matcherResult at: #condition) expression receiver value
+		equals: 3.
+	self
+		assertCollection:
+			((matcherResult at: #beforeCond) collect: [ :each | 
+				 each expression value ])
+		hasSameElements: { 1. 2 }.
+	self
+		assertCollection:
+		((matcherResult at: #body) collect: [ :each | each expression value ])
+		hasSameElements: { 5. 6 }.
+	self deny: (pattern match: modelFastPharo2) isMatch.
+
+	"######### shortcut #############"
+
+	pattern := patternModel asFASTPharoMatcher.
+	matcherResult := pattern match: modelFastPharo.
+	self assert: matcherResult isMatch.
+	self
+		assert: (matcherResult at: #condition) expression receiver value
+		equals: 3.
 	self
 		assertCollection:
 			((matcherResult at: #beforeCond) collect: [ :each | 
