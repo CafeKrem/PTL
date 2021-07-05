@@ -21,6 +21,18 @@ Metacello
 		load.
 ```
 
+#### load DSL for FASTPharo
+
+```smalltalk
+Metacello
+	new
+		repository: 'github://CafeKrem/PTL:main';
+		baseline: 'PTL';
+		configuration: 'fastPharo';
+		onConflictUseIncoming;
+		load.
+```
+
 ### how to write pattern
 
 #### LiteralMatcher 
