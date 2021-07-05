@@ -15,18 +15,54 @@ PTLFastPharoPatternDSLTest >> importFrom: aCompiledMethod [
 		  sorted: [ :a :b | a startPos < b startPos ]
 ]
 
+{ #category : #example }
+PTLFastPharoPatternDSLTest >> methodTestBadSequence [
+
+	2.
+	3.
+	4
+]
+
 { #category : #running }
 PTLFastPharoPatternDSLTest >> methodTestLiteral [
 	100
+]
+
+{ #category : #example }
+PTLFastPharoPatternDSLTest >> methodTestSequence [
+
+	1.
+	2.
+	3.
+	4
 ]
 
 { #category : #tests }
 PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 
 	| model pattern modelFastPharo |
-	model := (PTLFastPharoPatternDSLTest >> #methodTestLiteral)
-		         sourceNode body statements first.
-	modelFastPharo := (self importFrom: (PTLFastPharoPatternDSLTest >> #methodTestLiteral) )first expression.
+	model := [ 100 ] sourceNode statements first.
+	modelFastPharo := (self importFrom:
+		                   PTLFastPharoPatternDSLTest >> #methodTestLiteral)
+		                  first.
 	pattern := model acceptVisitor: PTLFastPharoPatternDSL new.
 	self assert: (pattern match: modelFastPharo) isMatch
+]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> testSequenceMatcher [
+
+	| pattern modelFastPharo patternModel modelFastPharo2 |
+	patternModel := [ 
+	                1.
+	                2.
+	                3.
+	                4 ] sourceNode.
+	modelFastPharo := self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestSequence.
+	modelFastPharo2 := self importFrom:
+		                   PTLFastPharoPatternDSLTest >> #methodTestBadSequence.
+	pattern := patternModel acceptVisitor: PTLFastPharoPatternDSL new.
+	self assert: (pattern match: modelFastPharo) isMatch.
+	self deny: (pattern match: modelFastPharo2) isMatch
 ]
