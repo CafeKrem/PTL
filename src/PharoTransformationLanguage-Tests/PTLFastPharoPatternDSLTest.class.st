@@ -15,6 +15,24 @@ PTLFastPharoPatternDSLTest >> importFrom: aCompiledMethod [
 		  sorted: [ :a :b | a startPos < b startPos ]
 ]
 
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestAssign [
+
+	| a |
+	1.
+	2.
+	a := 100
+]
+
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestBadAssign [
+
+	| a |
+	1.
+	2.
+	a := 200
+]
+
 { #category : #example }
 PTLFastPharoPatternDSLTest >> methodTestBadSequence [
 
@@ -45,6 +63,29 @@ PTLFastPharoPatternDSLTest >> methodTestWhileFalse [
 { #category : #'as yet unclassified' }
 PTLFastPharoPatternDSLTest >> methodTestWhileTrue [
 	[ 1 . 2 . 3 = 4 ] whileTrue: [ 5 . 6.  ]
+]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> testAssignMatcher [
+
+	| a model pattern fastPharoModel matchResult fastPharoModel2 |
+	model := [ 
+	         #'*any'.
+	         a := 100 ] .
+	pattern := model asFASTPharoMatcher.
+
+	fastPharoModel := self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestAssign.
+	fastPharoModel2 := self importFrom:
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestBadAssign.
+	matchResult := pattern match: (fastPharoModel collect: #expression).
+	self assert: matchResult isMatch.
+	self
+		assertCollection: ((matchResult at: #any) collect: #value)
+		hasSameElements: { 1. 2 }.
+		
+	self deny: (pattern match: (fastPharoModel2 collect: #expression) ) isMatch
 ]
 
 { #category : #tests }

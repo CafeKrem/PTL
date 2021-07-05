@@ -11,11 +11,10 @@ PTLFastPharoPatternDSL >> nameAsJoker: aName [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitAssignmentNode: anAssignmentNode [
-	1 halt.
-	^ FASTPharoAssignmentExpression class
-		suchAs:
-			{(#variable -> (anAssignmentNode variable acceptVisitor: self)).
-			(#value -> (anAssignmentNode value acceptVisitor: self))}
+
+	^ FASTPharoAssignmentExpression suchAs: { 
+			  (#variable -> (anAssignmentNode variable acceptVisitor: self)).
+			  (#expression -> (anAssignmentNode value acceptVisitor: self)) }
 ]
 
 { #category : #visiting }
@@ -56,8 +55,9 @@ PTLFastPharoPatternDSL >> visitSequenceNode: aSequenceNode [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitVariableNode: varNode [
-	1 halt.
-	(varNode name beginsWith: '_')
-		ifTrue: [ ^ self nameAsJoker: varNode name allButFirst ].
-	^ varNode class suchAs: {(#name -> varNode name asSymbol)}
+
+	(varNode name beginsWith: '_') ifTrue: [ 
+		1 halt.
+		^ self nameAsJoker: varNode name allButFirst ].
+	^ FASTVariableExpression suchAs: { (#name -> varNode name asSymbol) }
 ]
