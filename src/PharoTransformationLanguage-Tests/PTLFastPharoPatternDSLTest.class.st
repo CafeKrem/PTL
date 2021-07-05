@@ -37,16 +37,55 @@ PTLFastPharoPatternDSLTest >> methodTestSequence [
 	4
 ]
 
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestWhileFalse [
+	[ 1 . 2 . 3 = 4 ] whileFalse: [ 5 . 6.  ]
+]
+
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestWhileTrue [
+	[ 1 . 2 . 3 = 4 ] whileTrue: [ 5 . 6.  ]
+]
+
 { #category : #tests }
 PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 
 	| model pattern modelFastPharo |
-	model := [ 100 ] sourceNode statements first.
+	model := [ 100 ] sourceNode.
 	modelFastPharo := (self importFrom:
 		                   PTLFastPharoPatternDSLTest >> #methodTestLiteral)
 		                  first.
-	pattern := model acceptVisitor: PTLFastPharoPatternDSL new.
-	self assert: (pattern match: modelFastPharo) isMatch
+	pattern := model body acceptVisitor: PTLFastPharoPatternDSL new.
+	self assert: (pattern match: modelFastPharo expression) isMatch
+]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> testMessageSendMatcher [
+
+	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult |
+	patternModel := [ 
+	                [ 
+	                #'*beforeCond'.
+	                #'@condition' ] whileTrue: [ #'*body' ] ] sourceNode.
+	modelFastPharo := (self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestWhileTrue) collect: [:each | each expression].
+	modelFastPharo2 := self importFrom:
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestWhileFalse.
+	pattern := patternModel body acceptVisitor: PTLFastPharoPatternDSL new.
+	matcherResult := pattern  match: modelFastPharo.
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #condition) expression receiver value equals: 3.
+	self
+		assertCollection:
+			((matcherResult at: #beforeCond) collect: [ :each | 
+				 each expression value ])
+		hasSameElements: { 1. 2 }.
+	self
+		assertCollection:
+		((matcherResult at: #body) collect: [ :each | each expression value ])
+		hasSameElements: { 5. 6 }.
+	self deny: (pattern match: modelFastPharo2) isMatch
 ]
 
 { #category : #tests }
@@ -61,10 +100,14 @@ PTLFastPharoPatternDSLTest >> testSequenceMatcher [
 	modelFastPharo := self importFrom:
 		                  PTLFastPharoPatternDSLTest >> #methodTestSequence.
 	modelFastPharo2 := self importFrom:
-		                   PTLFastPharoPatternDSLTest >> #methodTestBadSequence.
-	pattern := patternModel acceptVisitor: PTLFastPharoPatternDSL new.
-	self assert: (pattern match: modelFastPharo) isMatch.
-	self deny: (pattern match: modelFastPharo2) isMatch
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestBadSequence.
+	pattern := patternModel body acceptVisitor:
+		           PTLFastPharoPatternDSL new.
+	self assert:
+		(pattern match: (modelFastPharo collect: #expression)) isMatch.
+	self deny:
+		(pattern match: (modelFastPharo2 collect: #expression)) isMatch
 ]
 
 { #category : #tests }
@@ -80,13 +123,14 @@ PTLFastPharoPatternDSLTest >> testSymbolMatcher [
 	modelFastPharo2 := self importFrom:
 		                   PTLFastPharoPatternDSLTest
 		                   >> #methodTestBadSequence.
-	pattern := patternModel acceptVisitor: PTLFastPharoPatternDSL new.
-	matcherResult := pattern match: modelFastPharo.
+	pattern := patternModel body acceptVisitor:
+		           PTLFastPharoPatternDSL new.
+	matcherResult := pattern match: (modelFastPharo collect: #expression).
 	self assert: matcherResult isMatch.
-	self assert: (matcherResult at: #first) expression value equals: 1.
+	self assert: (matcherResult at: #first) value equals: 1.
 	self
-		assertCollection: ((matcherResult at: #between) collect: [ :each | 
-				 each expression value ])
+		assertCollection:
+		((matcherResult at: #between) collect: [ :each | each value ])
 		hasSameElements: { 2. 3 }.
-	self assert: (pattern match: modelFastPharo2) isMatch.
+	self assert: (pattern match: (modelFastPharo2 collect: #expression)) isMatch
 ]

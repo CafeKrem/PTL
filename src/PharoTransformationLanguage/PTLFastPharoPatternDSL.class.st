@@ -20,7 +20,9 @@ PTLFastPharoPatternDSL >> visitAssignmentNode: anAssignmentNode [
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitBlockNode: aBlockNode [
-	^ aBlockNode body acceptVisitor: self.
+
+	^ FASTPharoBlockExpression suchAs:
+		  { (#'block > statements' -> (aBlockNode body acceptVisitor: self)) }
 ]
 
 { #category : #visiting }
@@ -30,18 +32,19 @@ PTLFastPharoPatternDSL >> visitLiteralNode: aNode [
 	valueMatcher := aNode value asMatcher.
 	(valueMatcher isEllipsis or: [ valueMatcher isJoker ]) ifTrue: [ 
 		^ valueMatcher ].
-	^ FASTExpressionStatement suchAs:
-		  { (#expression -> FASTLiteral suchAs: { (#value -> valueMatcher) }) }
+	^ FASTLiteral suchAs: { (#value -> valueMatcher) }
 ]
 
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitMessageNode: messageNode [
-	1 halt.
-	^ messageNode class suchAs: { 
-		#receiver -> (messageNode receiver acceptVisitor: self).
-		#selector -> messageNode selector.
-		#arguments -> (messageNode arguments collect: [ :each | each acceptVisitor: self ]).
-	 }
+
+	^ FASTPharoMessageSend suchAs: { 
+			  (#receiver -> (messageNode receiver acceptVisitor: self)).
+			  (#selector -> messageNode selector).
+			  (#arguments
+			   ->
+			   (messageNode arguments collect: [ :each | 
+				    each acceptVisitor: self ])) }
 ]
 
 { #category : #visiting }
