@@ -66,3 +66,27 @@ PTLFastPharoPatternDSLTest >> testSequenceMatcher [
 	self assert: (pattern match: modelFastPharo) isMatch.
 	self deny: (pattern match: modelFastPharo2) isMatch
 ]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> testSymbolMatcher [
+
+	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult |
+	patternModel := [ 
+	                #'@first'.
+	                #'*between'.
+	                4 ] sourceNode.
+	modelFastPharo := self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestSequence.
+	modelFastPharo2 := self importFrom:
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestBadSequence.
+	pattern := patternModel acceptVisitor: PTLFastPharoPatternDSL new.
+	matcherResult := pattern match: modelFastPharo.
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #first) expression value equals: 1.
+	self
+		assertCollection: ((matcherResult at: #between) collect: [ :each | 
+				 each expression value ])
+		hasSameElements: { 2. 3 }.
+	self assert: (pattern match: modelFastPharo2) isMatch.
+]

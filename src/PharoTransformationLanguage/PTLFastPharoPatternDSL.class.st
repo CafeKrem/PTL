@@ -29,7 +29,6 @@ PTLFastPharoPatternDSL >> visitLiteralNode: aNode [
 	| valueMatcher |
 	valueMatcher := aNode value asMatcher.
 	(valueMatcher isEllipsis or: [ valueMatcher isJoker ]) ifTrue: [ 
-		1 halt.
 		^ valueMatcher ].
 	^ FASTExpressionStatement suchAs:
 		  { (#expression -> FASTLiteral suchAs: { (#value -> valueMatcher) }) }
