@@ -4,7 +4,7 @@ A PTLFastPharoPatternDSLTest is a test class for testing the behavior of PTLFast
 Class {
 	#name : #PTLFastPharoPatternDSLTest,
 	#superclass : #TestCase,
-	#category : #'PharoTransformationLanguage-Tests-FastPharoPatternDSL'
+	#category : #'PharoTransformationLanguage-FastPharoPatternDSL'
 }
 
 { #category : #tests }

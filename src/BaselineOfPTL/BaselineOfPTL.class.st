@@ -22,5 +22,10 @@ BaselineOfPTL >> baseline: spec [
 		spec
 			for: #MooseX
 			do: [ 
-			spec package: 'PharoTransformationLanguage-MooseCompatibility' ] ]
+			spec package: 'PharoTransformationLanguage-MooseCompatibility' ] ].
+
+	spec for: #fastPharo do: [ 
+		spec
+			package: 'PharoTransformationLanguage-FastPharoPatternDSL'
+			with: [ spec requires: #( 'common' ) ] ]
 ]
