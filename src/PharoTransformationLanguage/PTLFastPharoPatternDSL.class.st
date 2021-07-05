@@ -57,7 +57,6 @@ PTLFastPharoPatternDSL >> visitSequenceNode: aSequenceNode [
 PTLFastPharoPatternDSL >> visitVariableNode: varNode [
 
 	(varNode name beginsWith: '_') ifTrue: [ 
-		1 halt.
-		^ self nameAsJoker: varNode name allButFirst ].
+		^ (self nameAsJoker: varNode name allButFirst) asMatcher ].
 	^ FASTVariableExpression suchAs: { (#name -> varNode name asSymbol) }
 ]

@@ -41,6 +41,12 @@ PTLFastPharoPatternDSLTest >> methodTestBadSequence [
 	4
 ]
 
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestIncrementAssign [
+	| klm |
+	klm := klm + 1
+]
+
 { #category : #running }
 PTLFastPharoPatternDSLTest >> methodTestLiteral [
 	100
@@ -198,4 +204,20 @@ PTLFastPharoPatternDSLTest >> testSymbolMatcher [
 		((matcherResult at: #between) collect: [ :each | each value ])
 		hasSameElements: { 2. 3 }.
 	self assert: (pattern match: (modelFastPharo2 collect: #expression)) isMatch
+]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> testVariableMatcher [
+
+	| pattern modelFastPharo patternModel matcherResult |
+	patternModel := [ _x := _x + 1 ] sourceNode.
+
+	pattern := patternModel asFASTPharoMatcher.
+
+	modelFastPharo := self importFrom:
+		                  PTLFastPharoPatternDSLTest
+		                  >> #methodTestIncrementAssign.
+	matcherResult := pattern match: (modelFastPharo collect: #expression).
+	self assert: matcherResult isMatch.
+	self assert: (matcherResult at: #x) name equals: 'klm'
 ]
