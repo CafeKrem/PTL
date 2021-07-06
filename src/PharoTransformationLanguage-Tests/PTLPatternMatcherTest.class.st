@@ -82,54 +82,6 @@ PTLPatternMatcherTest >> methodTestCompose1 [
 ]
 
 { #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode [
-	100
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode1 [
-	'klm'.
-	'jiop'.
-	'roger'.
-	100
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode2 [
-	'klm'.
-	'patrick'.
-	'edgard'
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode3 [
-	1.
-	2.
-	3.
-	4.
-	6.
-	100.
-	42.
-	50.
-	26
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestJoker [
-	1.
-	2.
-	3.
-	4.
-	5
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestJoker2 [
-	10.
-	100
-]
-
-{ #category : #example }
 PTLPatternMatcherTest >> methodTestMultipleChildrenNamed [
 	100
 		patrick;
