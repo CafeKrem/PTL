@@ -42,6 +42,7 @@ PTLListMatcher >> match: aValue withContext: aContext [
 	[ isMatched and: [ matcherTmp hasNext ] ] whileTrue: [ 
 		isMatched := matcherTmp next match: tmpValue withContext: aContext.
 		matcherTmp := matcherTmp next ].
+	isMatched := isMatched and: [ tmpValue isEmpty ].
 	isMatched ifTrue: [ 
 		self hookSaveAction: aValue withContext: aContext ].
 	^ isMatched
