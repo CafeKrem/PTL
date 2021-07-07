@@ -310,10 +310,13 @@ self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements firs
 { #category : #tests }
 PTLPatternMatcherTest >> testDirectPath1 [
 
-| pattern |
-pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
-
-self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+	| pattern |
+	pattern := RBMessageNode suchAs:
+		           { (#'receiver > class > nilMethod ' -> Class) }.
+	self
+		should: [ 
+		pattern match: [ 'klm' asString ] sourceNode body statements first ]
+		raise: PTLSelectorNotDefined
 ]
 
 { #category : #tests }
@@ -556,6 +559,16 @@ PTLPatternMatcherTest >> testMatchModelReference2 [
 	pattern := PTLTestClassA unique.
 	self assert: (pattern match: PTLTestClassA new) isMatch.
 	self deny: (pattern match: PTLTestClassB new) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testMatchModelReferenceShouldRaiseError [
+
+	| pattern |
+	pattern := PTLTestClassA suchAs: { (#klm -> 'klm') }.
+	self
+		should: [ pattern match: PTLTestClassA new ]
+		raise: PTLSelectorNotDefined
 ]
 
 { #category : #tests }
