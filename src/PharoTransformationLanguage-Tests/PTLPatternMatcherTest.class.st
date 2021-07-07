@@ -550,6 +550,15 @@ PTLPatternMatcherTest >> testMatchModelRefenceWithConfigurationMatcher2 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testMatchModelReference2 [
+
+	| pattern |
+	pattern := PTLTestClassA unique.
+	self assert: (pattern match: PTLTestClassA new) isMatch.
+	self deny: (pattern match: PTLTestClassB new) isMatch
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 
 	| pattern model1 model2 |

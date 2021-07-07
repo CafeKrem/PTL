@@ -34,3 +34,11 @@ Class >> suchAs: aCollection like: aFullBlockClosure [
 
 	^ (self suchAs: aCollection) like: aFullBlockClosure
 ]
+
+{ #category : #'*PharoTransformationLanguage' }
+Class >> unique [
+
+	^ (PTLMatcherModelReference withClass: self withConfiguration: {  })
+		  matchOnlyThisClass: true;
+		  yourself
+]

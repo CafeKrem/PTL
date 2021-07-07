@@ -24,7 +24,8 @@ Class {
 	#superclass : #PTLMatcherModelEntity,
 	#instVars : [
 		'modelDescription',
-		'configuration'
+		'configuration',
+		'matchOnlyThisClass'
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
@@ -35,6 +36,13 @@ PTLMatcherModelReference class >> withClass: aClass withConfiguration: aCollecti
 		modelDescription: aClass;
 		configuration: aCollection;
 		yourself
+]
+
+{ #category : #'as yet unclassified' }
+PTLMatcherModelReference >> compareValue: aValue [
+
+	matchOnlyThisClass ifTrue: [ ^ aValue class = modelDescription ].
+	^ aValue isKindOf: modelDescription
 ]
 
 { #category : #accessor }
@@ -51,12 +59,19 @@ PTLMatcherModelReference >> configuration: aCollection [
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
 
 	| value |
-	value := self firstElementOf: aValue.
-	^ (value isKindOf: modelDescription)
+	value := self firstElementOf: aValue.(value isKindOf: modelDescription).
+
+	^ (self compareValue: value)
 		  ifTrue: [ 
 			  configuration allSatisfy: [ :pattern | 
 				  pattern match: value withContext: aContext ] ]
 		  ifFalse: [ false ]
+]
+
+{ #category : #initialization }
+PTLMatcherModelReference >> initialize [
+
+	matchOnlyThisClass := false
 ]
 
 { #category : #'private-running' }
@@ -69,6 +84,12 @@ PTLMatcherModelReference >> match: aValue withContext: aContext [
 				  (self nacBlock argumentNames collect: [ :name | 
 					   aContext at: name ]) ]
 		ifFalse: [ ^ false ]
+]
+
+{ #category : #configuration }
+PTLMatcherModelReference >> matchOnlyThisClass: aBoolean [
+
+	matchOnlyThisClass := aBoolean
 ]
 
 { #category : #accessor }
