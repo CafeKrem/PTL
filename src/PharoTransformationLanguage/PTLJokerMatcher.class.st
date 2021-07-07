@@ -47,6 +47,18 @@ PTLJokerMatcher >> hasMatch: aValue withContext: aContext [
 			^ true ]
 ]
 
+{ #category : #PTL }
+PTLJokerMatcher >> inspectPTLAction [
+
+	^ {  }
+]
+
+{ #category : #PTL }
+PTLJokerMatcher >> inspectPTLKey [
+
+	^ '@ ' , savedSelector
+]
+
 { #category : #testing }
 PTLJokerMatcher >> isJoker [
 	^ true

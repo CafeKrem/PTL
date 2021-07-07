@@ -35,6 +35,18 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #PTL }
+PTLEllipsisMatcher >> inspectPTLAction [
+
+	^ {  }
+]
+
+{ #category : #PTL }
+PTLEllipsisMatcher >> inspectPTLKey [
+
+	^ '* ' , savedSelector
+]
+
 { #category : #testing }
 PTLEllipsisMatcher >> isEllipsis [
 	^ true

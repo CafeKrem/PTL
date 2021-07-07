@@ -36,6 +36,24 @@ PTLMatcherLiteralEntity >> hasMatch: aValue withContext: aContext [
 					   each read: aFirstValue ]) anySatisfy: [ :each | each = value ] ] ]
 ]
 
+{ #category : #PTL }
+PTLMatcherLiteralEntity >> inspectPTLAction [
+
+	^  {  }
+]
+
+{ #category : #PTL }
+PTLMatcherLiteralEntity >> inspectPTLKey [
+
+	^ self value asString
+]
+
+{ #category : #toString }
+PTLMatcherLiteralEntity >> toString [
+
+	^ self class name , ' value -> ' , value
+]
+
 { #category : #accessing }
 PTLMatcherLiteralEntity >> value [
 	^value 
