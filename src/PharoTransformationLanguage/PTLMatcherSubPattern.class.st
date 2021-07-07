@@ -47,7 +47,14 @@ PTLMatcherSubPattern >> hasMatch: aValue withContext: aContext [
 						                   [ 
 						                   attributeTmp perform: eachSelector asSymbol ]
 							                   on: Error
-							                   do: [ ^ false ] ]) copy convertToCollection ].
+							                   do: [ 
+								                   ^ PTLSelectorNotDefined signal:
+									                     'class ' , attributeTmp class name
+									                     , 'don''t understand the message '
+									                     , eachSelector , '.' , String cr
+									                     ,
+									                     'please look at your pattern maybe there is an error' ] ])
+					                  copy convertToCollection ].
 
 			  matcherModel match: attributeTmp withContext: aContext ]
 ]
