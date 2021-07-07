@@ -64,6 +64,18 @@ PTLMatcherSubPattern >> initialize [
 	selectors := OrderedCollection new
 ]
 
+{ #category : #PTL }
+PTLMatcherSubPattern >> inspectPTLAction [
+
+	^ { matcherModel }
+]
+
+{ #category : #'as yet unclassified' }
+PTLMatcherSubPattern >> inspectPTLKey [
+
+	^ '>' join: selectors
+]
+
 { #category : #accessor }
 PTLMatcherSubPattern >> matcherModel [
 	^ matcherModel

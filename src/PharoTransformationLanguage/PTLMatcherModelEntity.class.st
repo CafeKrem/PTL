@@ -99,6 +99,16 @@ PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
 	self save: (self pop: aValue) inContext: aContext
 ]
 
+{ #category : #PTL }
+PTLMatcherModelEntity >> inspectPTLAction [
+	^ self subclassResponsibility
+]
+
+{ #category : #API }
+PTLMatcherModelEntity >> inspectPTLKey [
+	self halt
+]
+
 { #category : #API }
 PTLMatcherModelEntity >> isContained [
 
