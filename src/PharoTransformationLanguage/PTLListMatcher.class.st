@@ -48,13 +48,13 @@ PTLListMatcher >> inspectPTLAction [
 { #category : #PTL }
 PTLListMatcher >> inspectPTLKey [
 
-	^ 'list matcher store in ' , savedSelector
+	^ 'list matcher store in ' , savedSelector asString 
 ]
 
 { #category : #'as yet unclassified' }
-PTLListMatcher >> inspectionPattern [
+PTLListMatcher >> inspectionPattern2 [
 
-	<inspectorPresentationOrder: 0 title: 'Pattern'>
+	"<inspectorPresentationOrder: 0 title: 'Pattern'>"
 	| collectionMatcher tmpMatcher |
 	collectionMatcher := OrderedCollection new.
 	tmpMatcher := matcher.

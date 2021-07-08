@@ -89,3 +89,8 @@ PTLJokerMatcher >> rangeMatch: anInteger withContext: aContext [
 	self match: anInteger withContext: aContext.
 	^ aContext at: savedSelector
 ]
+
+{ #category : #printing }
+PTLJokerMatcher >> toString [
+	^ '* ' , savedSelector
+]

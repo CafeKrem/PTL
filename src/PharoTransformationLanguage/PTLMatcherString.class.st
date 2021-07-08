@@ -46,12 +46,3 @@ PTLMatcherString >> hookSaveAction: aValue withContext: aContext [
 		self save: (aValue removeAll: self value) inContext: aContext ]
 		ifFalse: [ super hookSaveAction: aValue withContext: aContext ]
 ]
-
-{ #category : #'as yet unclassified' }
-PTLMatcherString >> inspectionPattern [
-
-	<inspectorPresentationOrder: 0 title: 'Pattern'>
-	^ SpTextPresenter new
-		  text: self value;
-		  yourself
-]

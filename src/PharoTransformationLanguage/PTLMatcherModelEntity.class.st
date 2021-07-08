@@ -109,6 +109,20 @@ PTLMatcherModelEntity >> inspectPTLKey [
 	self halt
 ]
 
+{ #category : #'as yet unclassified' }
+PTLMatcherModelEntity >> inspectionPattern [
+
+	<inspectorPresentationOrder: 0 title: 'Pattern'>
+	| collectionMatcher |
+	collectionMatcher := { self }.
+	^ SpTreePresenter new
+		  roots: collectionMatcher;
+		  children: [ :aClass | aClass inspectPTLAction ];
+		  display: [ :aClass | aClass inspectPTLKey ];
+		  expandRoots;
+		  yourself
+]
+
 { #category : #API }
 PTLMatcherModelEntity >> isContained [
 
