@@ -694,6 +694,7 @@ PTLPatternMatcherTest >> testRBAST [
 				              (#arguments -> (RBBlockNode suchAs:
 					                { (#body -> (RBSequenceNode named: #whileBlock)) })) })) }) }
 		           asMatcher.
+	1 halt.
 	patternWithoutParenthesis := { (RBSequenceNode suchAs:
 		                              { (#statements -> RBMessageNode 
 			                               suchAs: { 

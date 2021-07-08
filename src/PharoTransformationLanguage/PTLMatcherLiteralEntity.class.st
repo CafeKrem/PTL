@@ -48,12 +48,6 @@ PTLMatcherLiteralEntity >> inspectPTLKey [
 	^ self value asString
 ]
 
-{ #category : #toString }
-PTLMatcherLiteralEntity >> toString [
-
-	^ self class name , ' value -> ' , value asString
-]
-
 { #category : #accessing }
 PTLMatcherLiteralEntity >> value [
 	^value 

@@ -19,5 +19,5 @@ PTLPatternMatcherTestP9 >> compatibilityStringCompositeMatche2 [
 { #category : #compatibility }
 PTLPatternMatcherTestP9 >> rBASTSpecificCode [
 
-	^ RBSelectorNode suchAs: { 'whileTrue:' }
+	^ RBSelectorNode suchAs: { (#value -> 'whileTrue:') }
 ]
