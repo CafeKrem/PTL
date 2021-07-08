@@ -51,7 +51,7 @@ PTLMatcherLiteralEntity >> inspectPTLKey [
 { #category : #toString }
 PTLMatcherLiteralEntity >> toString [
 
-	^ self class name , ' value -> ' , value
+	^ self class name , ' value -> ' , value asString
 ]
 
 { #category : #accessing }

@@ -84,20 +84,6 @@ PTLMatcherModelReference >> inspectPTLKey [
 	^ modelDescription name
 ]
 
-{ #category : #'as yet unclassified' }
-PTLMatcherModelReference >> inspectionPattern [
-
-	<inspectorPresentationOrder: 0 title: 'Pattern'>
-	| collectionMatcher |
-	collectionMatcher := { self }.
-	^ SpTreePresenter new
-		  roots: collectionMatcher;
-		  children: [ :aClass | aClass inspectPTLAction ];
-		  display: [ :aClass | aClass inspectPTLKey ];
-		  expandRoots;
-		  yourself
-]
-
 { #category : #'private-running' }
 PTLMatcherModelReference >> match: aValue withContext: aContext [
 
