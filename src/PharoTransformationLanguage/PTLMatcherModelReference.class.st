@@ -24,7 +24,8 @@ Class {
 	#superclass : #PTLMatcherModelEntity,
 	#instVars : [
 		'modelDescription',
-		'configuration'
+		'configuration',
+		'matchOnlyThisClass'
 	],
 	#category : #'PharoTransformationLanguage-model'
 }
@@ -35,6 +36,13 @@ PTLMatcherModelReference class >> withClass: aClass withConfiguration: aCollecti
 		modelDescription: aClass;
 		configuration: aCollection;
 		yourself
+]
+
+{ #category : #'as yet unclassified' }
+PTLMatcherModelReference >> compareValue: aValue [
+
+	matchOnlyThisClass ifTrue: [ ^ aValue class = modelDescription ].
+	^ aValue isKindOf: modelDescription
 ]
 
 { #category : #accessor }
@@ -51,12 +59,43 @@ PTLMatcherModelReference >> configuration: aCollection [
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
 
 	| value |
-	value := self firstElementOf: aValue.
-	^ (value isKindOf: modelDescription)
+	value := self firstElementOf: aValue.(value isKindOf: modelDescription).
+
+	^ (self compareValue: value)
 		  ifTrue: [ 
 			  configuration allSatisfy: [ :pattern | 
 				  pattern match: value withContext: aContext ] ]
 		  ifFalse: [ false ]
+]
+
+{ #category : #initialization }
+PTLMatcherModelReference >> initialize [
+
+	matchOnlyThisClass := false
+]
+
+{ #category : #PTL }
+PTLMatcherModelReference >> inspectPTLAction [
+	^ self configuration 
+]
+
+{ #category : #PTL }
+PTLMatcherModelReference >> inspectPTLKey [
+	^ modelDescription name
+]
+
+{ #category : #'as yet unclassified' }
+PTLMatcherModelReference >> inspectionPattern [
+
+	<inspectorPresentationOrder: 0 title: 'Pattern'>
+	| collectionMatcher |
+	collectionMatcher := { self }.
+	^ SpTreePresenter new
+		  roots: collectionMatcher;
+		  children: [ :aClass | aClass inspectPTLAction ];
+		  display: [ :aClass | aClass inspectPTLKey ];
+		  expandRoots;
+		  yourself
 ]
 
 { #category : #'private-running' }
@@ -71,6 +110,12 @@ PTLMatcherModelReference >> match: aValue withContext: aContext [
 		ifFalse: [ ^ false ]
 ]
 
+{ #category : #configuration }
+PTLMatcherModelReference >> matchOnlyThisClass: aBoolean [
+
+	matchOnlyThisClass := aBoolean
+]
+
 { #category : #accessor }
 PTLMatcherModelReference >> modelDescription: aClass [
 	modelDescription := aClass
@@ -80,4 +125,9 @@ PTLMatcherModelReference >> modelDescription: aClass [
 PTLMatcherModelReference >> nacBlock [
 
 	^ nacBlock ifNil: [ nacBlock := [ true ] ]
+]
+
+{ #category : #toString }
+PTLMatcherModelReference >> toString [
+	^ modelDescription name
 ]

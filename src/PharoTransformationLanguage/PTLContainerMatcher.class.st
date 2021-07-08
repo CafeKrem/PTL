@@ -44,6 +44,16 @@ PTLContainerMatcher >> hasMatch: aValue withContext: aContext [
 			  matcher hasMatch: each withContext: aContext ] ]
 ]
 
+{ #category : #PTL }
+PTLContainerMatcher >> inspectPTLAction [
+	^ elementMatcher  
+]
+
+{ #category : #PTL }
+PTLContainerMatcher >> inspectPTLKey [
+	^ 'container matcher'
+]
+
 { #category : #'private-running' }
 PTLContainerMatcher >> match: aValue withContext: aContext [
 

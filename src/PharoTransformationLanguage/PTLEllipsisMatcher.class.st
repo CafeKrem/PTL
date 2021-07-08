@@ -35,6 +35,18 @@ Class {
 	#category : #'PharoTransformationLanguage-model'
 }
 
+{ #category : #PTL }
+PTLEllipsisMatcher >> inspectPTLAction [
+
+	^ {  }
+]
+
+{ #category : #PTL }
+PTLEllipsisMatcher >> inspectPTLKey [
+
+	^ '* ' , savedSelector
+]
+
 { #category : #testing }
 PTLEllipsisMatcher >> isEllipsis [
 	^ true
@@ -54,18 +66,23 @@ PTLEllipsisMatcher >> jokerHasMatch: aValue withNext: aNext withContext: aContex
 
 { #category : #'private-running' }
 PTLEllipsisMatcher >> match: aValue withContext: aContext [
+
 	| value isNextMatch |
 	matchedNodes := OrderedCollection new.
 	next
 		ifNil: [ "I match all the collection because I'm the last."
 			self save: aValue inContext: aContext.
+			aValue removeAll.
 			isNextMatch := true ]
-		ifNotNil: [ [ aValue isEmpty
-				or:
-					[ isNextMatch := next hasMatch: aValue withContext: aContext ] ]
-				whileFalse: [value := self pop: aValue.
+		ifNotNil: [ 
+			[ 
+			aValue isEmpty or: [ 
+				isNextMatch := next hasMatch: aValue withContext: aContext ] ] 
+				whileFalse: [ 
+					value := self pop: aValue.
 					matchedNodes add: value ].
 			self save: matchedNodes inContext: aContext ].
+
 	^ isNextMatch
 ]
 
@@ -88,5 +105,5 @@ PTLEllipsisMatcher >> save: aValue inContext: aContext [
 			(aValue isNotEmpty and: [ aValue first isCharacter ]) 
 				ifTrue: [ 
 				^ aContext at: savedSelector put: ('' join: aValue) ] ].
-		aContext at: savedSelector put: aValue ]
+		aContext at: savedSelector put: aValue copy ]
 ]
