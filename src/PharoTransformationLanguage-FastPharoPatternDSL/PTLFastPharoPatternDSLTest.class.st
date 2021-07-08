@@ -4,6 +4,12 @@ A PTLFastPharoPatternDSLTest is a test class for testing the behavior of PTLFast
 Class {
 	#name : #PTLFastPharoPatternDSLTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'a'
+	],
+	#classInstVars : [
+		'a'
+	],
 	#category : #'PharoTransformationLanguage-FastPharoPatternDSL'
 }
 
@@ -13,6 +19,13 @@ PTLFastPharoPatternDSLTest >> importFrom: aCompiledMethod [
 	^ (FASTSmalltalkImporterVisitor new runWithSource:
 		   aCompiledMethod sourceCode) statements asOrderedCollection 
 		  sorted: [ :a :b | a startPos < b startPos ]
+]
+
+{ #category : #tests }
+PTLFastPharoPatternDSLTest >> importMethod: aCompiledMethod [
+
+	^ (FASTSmalltalkImporterVisitor new runWithSource:
+		   aCompiledMethod sourceCode)
 ]
 
 { #category : #'as yet unclassified' }
@@ -39,6 +52,13 @@ PTLFastPharoPatternDSLTest >> methodTestBadSequence [
 	2.
 	3.
 	4
+]
+
+{ #category : #'as yet unclassified' }
+PTLFastPharoPatternDSLTest >> methodTestBlock [
+
+	| klm |
+	[ klm := klm + 1 ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -74,24 +94,24 @@ PTLFastPharoPatternDSLTest >> methodTestWhileTrue [
 { #category : #tests }
 PTLFastPharoPatternDSLTest >> testAssignMatcher [
 
-	| a model pattern fastPharoModel matchResult fastPharoModel2 |
+	| model pattern fastPharoModel matchResult fastPharoModel2 |
 	model := [ 
 	         #'*any'.
-	         a := 100 ] .
+	         a := 100 ].
 	pattern := model asFASTPharoMatcher.
-
 	fastPharoModel := self importFrom:
 		                  PTLFastPharoPatternDSLTest >> #methodTestAssign.
 	fastPharoModel2 := self importFrom:
 		                   PTLFastPharoPatternDSLTest
 		                   >> #methodTestBadAssign.
-	matchResult := pattern match: (fastPharoModel collect: #expression).
+	matchResult := pattern match: fastPharoModel.
 	self assert: matchResult isMatch.
 	self
-		assertCollection: ((matchResult at: #any) collect: #value)
+		assertCollection:
+		((matchResult at: #any) collect: [ :each | each expression value ])
 		hasSameElements: { 1. 2 }.
-		
-	self deny: (pattern match: (fastPharoModel2 collect: #expression) ) isMatch
+
+	self deny: (pattern match: fastPharoModel2) isMatch
 ]
 
 { #category : #tests }
@@ -110,12 +130,10 @@ PTLFastPharoPatternDSLTest >> testBlockInstructionMatcher [
 PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 
 	| model pattern modelFastPharo |
-	model := [ 100 ] sourceNode.
-	modelFastPharo := (self importFrom:
-		                   PTLFastPharoPatternDSLTest >> #methodTestLiteral)
-		                  first.
-	pattern := model body acceptVisitor: PTLFastPharoPatternDSL new.
-	self assert: (pattern match: modelFastPharo expression) isMatch
+	pattern := [ 100 ] asFASTPharoMatcher.
+	modelFastPharo := self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestLiteral.
+	self assert: (pattern match: modelFastPharo ) isMatch
 ]
 
 { #category : #tests }
@@ -126,10 +144,8 @@ PTLFastPharoPatternDSLTest >> testMessageSendMatcher [
 	                [ 
 	                #'*beforeCond'.
 	                #'@condition' ] whileTrue: [ #'*body' ] ] sourceNode.
-	modelFastPharo := (self importFrom:
-		                   PTLFastPharoPatternDSLTest
-		                   >> #methodTestWhileTrue) collect: [ :each | 
-		                  each expression ].
+	modelFastPharo := self importFrom:
+		                  PTLFastPharoPatternDSLTest >> #methodTestWhileTrue.
 	modelFastPharo2 := self importFrom:
 		                   PTLFastPharoPatternDSLTest
 		                   >> #methodTestWhileFalse.
@@ -172,6 +188,28 @@ PTLFastPharoPatternDSLTest >> testMessageSendMatcher [
 ]
 
 { #category : #tests }
+PTLFastPharoPatternDSLTest >> testMethodMatcher [
+
+	| model pattern fastPharoModel matchResult fastPharoModel2 |
+	pattern := FASTPharoMethodEntity suchAs: { (#statements -> [ 
+		            #'*any'.
+		            a := 100 ] asFASTPharoMatcher) }.
+	fastPharoModel := self importMethod:
+		                  PTLFastPharoPatternDSLTest >> #methodTestAssign.
+	fastPharoModel2 := self importMethod:
+		                   PTLFastPharoPatternDSLTest
+		                   >> #methodTestBadAssign.
+	matchResult := pattern match: fastPharoModel.
+	self assert: matchResult isMatch.
+	self
+		assertCollection:
+		((matchResult at: #any) collect: [ :each | each expression value ])
+		hasSameElements: { 1. 2 }.
+
+	self deny: (pattern match: fastPharoModel2) isMatch
+]
+
+{ #category : #tests }
 PTLFastPharoPatternDSLTest >> testSequenceMatcher [
 
 	| pattern modelFastPharo patternModel modelFastPharo2 |
@@ -187,10 +225,8 @@ PTLFastPharoPatternDSLTest >> testSequenceMatcher [
 		                   >> #methodTestBadSequence.
 	pattern := patternModel body acceptVisitor:
 		           PTLFastPharoPatternDSL new.
-	self assert:
-		(pattern match: (modelFastPharo collect: #expression)) isMatch.
-	self deny:
-		(pattern match: (modelFastPharo2 collect: #expression)) isMatch
+	self assert: (pattern match: modelFastPharo) isMatch.
+	self deny: (pattern match: modelFastPharo2) isMatch
 ]
 
 { #category : #tests }
@@ -208,14 +244,14 @@ PTLFastPharoPatternDSLTest >> testSymbolMatcher [
 		                   >> #methodTestBadSequence.
 	pattern := patternModel body acceptVisitor:
 		           PTLFastPharoPatternDSL new.
-	matcherResult := pattern match: (modelFastPharo collect: #expression).
+	matcherResult := pattern match: modelFastPharo.
 	self assert: matcherResult isMatch.
-	self assert: (matcherResult at: #first) value equals: 1.
+	self assert: (matcherResult at: #first) expression value equals: 1.
 	self
-		assertCollection:
-		((matcherResult at: #between) collect: [ :each | each value ])
+		assertCollection: ((matcherResult at: #between) collect: [ :each | 
+				 each expression value ])
 		hasSameElements: { 2. 3 }.
-	self assert: (pattern match: (modelFastPharo2 collect: #expression)) isMatch
+	self assert: (pattern match: modelFastPharo2) isMatch
 ]
 
 { #category : #tests }
@@ -229,7 +265,7 @@ PTLFastPharoPatternDSLTest >> testVariableMatcher [
 	modelFastPharo := self importFrom:
 		                  PTLFastPharoPatternDSLTest
 		                  >> #methodTestIncrementAssign.
-	matcherResult := pattern match: (modelFastPharo collect: #expression).
+	matcherResult := pattern match: modelFastPharo.
 	self assert: matcherResult isMatch.
 	self assert: (matcherResult at: #x) name equals: 'klm'
 ]

@@ -49,8 +49,13 @@ PTLFastPharoPatternDSL >> visitMessageNode: messageNode [
 { #category : #visiting }
 PTLFastPharoPatternDSL >> visitSequenceNode: aSequenceNode [
 
+	| subPattern |
 	^ (aSequenceNode statements collect: [ :statement | 
-		   statement acceptVisitor: self ]) asMatcher
+		  subPattern := statement acceptVisitor: self.
+		  subPattern isJokerOrEllipsis
+			  ifTrue: [ subPattern ]
+			  ifFalse: [ 
+			  FASTExpressionStatement suchAs: { (#expression -> subPattern) } ] ]) asMatcher 
 ]
 
 { #category : #visiting }

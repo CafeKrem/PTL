@@ -145,6 +145,12 @@ PTLMatcherModelEntity >> isJoker [
 	^ false
 ]
 
+{ #category : #testing }
+PTLMatcherModelEntity >> isJokerOrEllipsis [
+
+	^ self isJoker or: [ self isEllipsis ]
+]
+
 { #category : #action }
 PTLMatcherModelEntity >> jokerHasMatch: aValue [
 
