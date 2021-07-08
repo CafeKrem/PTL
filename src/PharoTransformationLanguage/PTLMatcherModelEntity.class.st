@@ -101,12 +101,15 @@ PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
 
 { #category : #PTL }
 PTLMatcherModelEntity >> inspectPTLAction [
+	"return a collection of children or an empty collection if there is no children"
 	^ self subclassResponsibility
 ]
 
 { #category : #API }
 PTLMatcherModelEntity >> inspectPTLKey [
-	self halt
+	"how to display each matcher "
+		^ self subclassResponsibility 
+	
 ]
 
 { #category : #'as yet unclassified' }
