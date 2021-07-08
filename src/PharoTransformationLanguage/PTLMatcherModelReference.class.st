@@ -112,8 +112,3 @@ PTLMatcherModelReference >> nacBlock [
 
 	^ nacBlock ifNil: [ nacBlock := [ true ] ]
 ]
-
-{ #category : #toString }
-PTLMatcherModelReference >> toString [
-	^ modelDescription name
-]

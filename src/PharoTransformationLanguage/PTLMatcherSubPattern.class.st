@@ -73,7 +73,7 @@ PTLMatcherSubPattern >> inspectPTLAction [
 { #category : #'as yet unclassified' }
 PTLMatcherSubPattern >> inspectPTLKey [
 
-	^ '>' join: selectors
+	^ '#' , ('>' join: selectors)
 ]
 
 { #category : #accessor }

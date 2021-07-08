@@ -51,23 +51,6 @@ PTLListMatcher >> inspectPTLKey [
 	^ 'list matcher store in ' , savedSelector asString 
 ]
 
-{ #category : #'as yet unclassified' }
-PTLListMatcher >> inspectionPattern2 [
-
-	"<inspectorPresentationOrder: 0 title: 'Pattern'>"
-	| collectionMatcher tmpMatcher |
-	collectionMatcher := OrderedCollection new.
-	tmpMatcher := matcher.
-	collectionMatcher add: tmpMatcher.
-	[ tmpMatcher hasNext ] whileTrue: [ 
-		tmpMatcher := tmpMatcher next.
-		collectionMatcher add: tmpMatcher ].
-	^ SpListPresenter new
-		  items: collectionMatcher;
-		  display: [ :aMatcher | aMatcher toString ];
-		  yourself
-]
-
 { #category : #'private-running' }
 PTLListMatcher >> match: aValue withContext: aContext [
 
