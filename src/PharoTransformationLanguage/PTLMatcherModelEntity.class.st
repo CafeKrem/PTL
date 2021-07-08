@@ -243,6 +243,6 @@ PTLMatcherModelEntity >> | aPTLMatcherModelReference [
 	^ PTLOrMatcher new
 		matchers:
 			{self.
-			aPTLMatcherModelReference} asOrderedCollection;
+			aPTLMatcherModelReference asMatcher} asOrderedCollection;
 		yourself
 ]

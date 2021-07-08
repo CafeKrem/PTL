@@ -9,11 +9,19 @@ Class {
 }
 
 { #category : #running }
-PTLFunctionalBlock >> evaluate: anObject [ 
+PTLFunctionalBlock >> evaluate: anObject [
+
 	| result |
 	result := matching match: anObject.
-	result isMatch ifFalse: [ ^ false ].
-	prduction valueWithDict: (result context)
+	result isMatch ifFalse: [ 
+		^ PTLRuleResult new
+			  isMatch: false;
+			  yourself ].
+
+	^ PTLRuleResult new
+		  isMatch: true;
+		  result: (prduction valueWithDict: result context);
+		  yourself
 ]
 
 { #category : #accessor }

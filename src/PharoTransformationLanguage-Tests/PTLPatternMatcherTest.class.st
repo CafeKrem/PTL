@@ -422,13 +422,36 @@ PTLPatternMatcherTest >> testFunctionalDSL [
 PTLPatternMatcherTest >> testFunctionalDSL2 [
 	| externalVariable rule |
 	externalVariable := false.
-	rule := ((Point named: #value) | {1 . #'*subList' . 100} asMatcher)
+	rule := ((Point named: #value) | {1 . #'*subList' . 100})
 		=> [ externalVariable := true ].
 	rule evaluate: 100 @ 100.
 	self assert: externalVariable equals: true.
 	externalVariable := false.
 	rule evaluate: {1 . 3 . 4 . 5 . 3 . 100}.
 	self assert: externalVariable equals: true
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testFunctionalDSL3 [
+
+	| externalVariable rule |
+	rule := { 
+		        ((Integer named: #roger) => [ :roger | 
+		         1.
+		         roger ]).
+		        ((Point named: #patrick) => [ :patrick | 
+		         2.
+		         patrick ]).
+		        (#'@x' asMatcher => [ :x | 
+		         3.
+		         x ]) } asRuleSet.
+	externalVariable := rule evaluate: 100.
+	self assert: externalVariable equals: 100.
+	1 halt.
+	externalVariable := rule evaluate: 10 @ 10.
+	self assert: externalVariable equals: 10 @ 10.
+	externalVariable := rule evaluate: { 1. 3. 4. 5. 3. 100 }.
+	self assert: externalVariable equals: { 1. 3. 4. 5. 3. 100 }
 ]
 
 { #category : #tests }
@@ -937,6 +960,15 @@ PTLPatternMatcherTest >> testStringMatcher3 [
 	matchResult :=  pattern match:  'getLabel()'.
 	self assert: matchResult isMatch.
 	self assert: (matchResult at: #truc) equals: 'Label'
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testStringMatcher4 [
+
+	| pattern |
+	pattern := String named: #x.
+	self assert: (pattern match: 'klm') isMatch.
+	self assert: ((pattern match: 'klm') at: #x) equals: 'klm'
 ]
 
 { #category : #tests }
