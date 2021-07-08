@@ -32,6 +32,25 @@ PTLListMatcher >> hookSaveAction: aValue withContext: aContext [
 	savedSelector ifNotNil: [ aContext at: savedSelector put: aValue ]
 ]
 
+{ #category : #PTL }
+PTLListMatcher >> inspectPTLAction [
+
+	| collectionMatcher tmpMatcher |
+	collectionMatcher := OrderedCollection new.
+	tmpMatcher := matcher.
+	collectionMatcher add: tmpMatcher.
+	[ tmpMatcher hasNext ] whileTrue: [ 
+		tmpMatcher := tmpMatcher next.
+		collectionMatcher add: tmpMatcher ].
+	^ collectionMatcher
+]
+
+{ #category : #PTL }
+PTLListMatcher >> inspectPTLKey [
+
+	^ 'list matcher store in ' , savedSelector asString 
+]
+
 { #category : #'private-running' }
 PTLListMatcher >> match: aValue withContext: aContext [
 
@@ -42,6 +61,7 @@ PTLListMatcher >> match: aValue withContext: aContext [
 	[ isMatched and: [ matcherTmp hasNext ] ] whileTrue: [ 
 		isMatched := matcherTmp next match: tmpValue withContext: aContext.
 		matcherTmp := matcherTmp next ].
+	isMatched := isMatched and: [ tmpValue isEmpty ].
 	isMatched ifTrue: [ 
 		self hookSaveAction: aValue withContext: aContext ].
 	^ isMatched

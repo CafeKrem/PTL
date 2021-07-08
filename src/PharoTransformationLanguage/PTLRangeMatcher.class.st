@@ -48,6 +48,20 @@ PTLRangeMatcher >> hasMatch: anInteger withContext: aContext [
 		and: [ value <= (to rangeMatch: value withContext: aContext) ]
 ]
 
+{ #category : #PTL }
+PTLRangeMatcher >> inspectPTLAction [
+	"return a collection of children or an empty collection if there is no children"
+	^ {  }
+]
+
+{ #category : #API }
+PTLRangeMatcher >> inspectPTLKey [
+
+	"how to display each matcher "
+
+	^ from asString , '..' , to asString
+]
+
 { #category : #accessor }
 PTLRangeMatcher >> to: anInteger [ 
 	to := anInteger

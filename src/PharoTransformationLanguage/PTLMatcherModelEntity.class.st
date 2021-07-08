@@ -107,6 +107,33 @@ PTLMatcherModelEntity >> hookSaveAction: aValue withContext: aContext [
 	self save: (self pop: aValue) inContext: aContext
 ]
 
+{ #category : #PTL }
+PTLMatcherModelEntity >> inspectPTLAction [
+	"return a collection of children or an empty collection if there is no children"
+	^ self subclassResponsibility
+]
+
+{ #category : #API }
+PTLMatcherModelEntity >> inspectPTLKey [
+	"how to display each matcher "
+		^ self subclassResponsibility 
+	
+]
+
+{ #category : #'as yet unclassified' }
+PTLMatcherModelEntity >> inspectionPattern [
+
+	<inspectorPresentationOrder: 0 title: 'Pattern'>
+	| collectionMatcher |
+	collectionMatcher := { self }.
+	^ SpTreePresenter new
+		  roots: collectionMatcher;
+		  children: [ :aClass | aClass inspectPTLAction ];
+		  display: [ :aClass | aClass inspectPTLKey ];
+		  expandRoots;
+		  yourself
+]
+
 { #category : #API }
 PTLMatcherModelEntity >> isContained [
 

@@ -82,54 +82,6 @@ PTLPatternMatcherTest >> methodTestCompose1 [
 ]
 
 { #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode [
-	100
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode1 [
-	'klm'.
-	'jiop'.
-	'roger'.
-	100
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode2 [
-	'klm'.
-	'patrick'.
-	'edgard'
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestEllipsisNode3 [
-	1.
-	2.
-	3.
-	4.
-	6.
-	100.
-	42.
-	50.
-	26
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestJoker [
-	1.
-	2.
-	3.
-	4.
-	5
-]
-
-{ #category : #example }
-PTLPatternMatcherTest >> methodTestJoker2 [
-	10.
-	100
-]
-
-{ #category : #example }
 PTLPatternMatcherTest >> methodTestMultipleChildrenNamed [
 	100
 		patrick;
@@ -358,34 +310,30 @@ self assert: (pattern match:  [ 'klm' asString ] sourceNode body statements firs
 { #category : #tests }
 PTLPatternMatcherTest >> testDirectPath1 [
 
-| pattern |
-pattern := RBMessageNode  suchAs: { #'receiver > class > nilMethod ' -> Class } .
-
-self deny: (pattern match:  [ 'klm' asString ] sourceNode body statements first ) isMatch
+	| pattern |
+	pattern := RBMessageNode suchAs:
+		           { (#'receiver > class > nilMethod ' -> Class) }.
+	self
+		should: [ 
+		pattern match: [ 'klm' asString ] sourceNode body statements first ]
+		raise: PTLSelectorNotDefined
 ]
 
 { #category : #tests }
 PTLPatternMatcherTest >> testEllipsisMatcher [
 
 	| pattern pattern1 model0 model1 matchResult matchResult1 model2 patternShortcut pattern1Shortcut |
-	pattern := (RBSequenceNode suchAs: { (#statements -> { 
-			             ($* named: #ellipsis).
-			             100 }) }) asMatcher.
-	pattern1 := (RBSequenceNode suchAs: { (#statements -> { 
-			              (PTLEllipsisMatcher new named: #ellipsis).
-			              100 }) }) asMatcher.
-	patternShortcut := (RBSequenceNode suchAs:
-		                    { (#statements -> { #'*ellipsis'. 100 }) })
-		                   asMatcher.
-	pattern1Shortcut := RBSequenceNode suchAs:
-		                    #statements
-		                    -> { { #'*ellipsis'. 100 } } asMatcher.
-	model0 := self productFASTPharo:
-		          PTLPatternMatcherTest >> #methodTestEllipsisNode.
-	model1 := self productFASTPharo:
-		          PTLPatternMatcherTest >> #methodTestEllipsisNode1.
-	model2 := self productFASTPharo:
-		          PTLPatternMatcherTest >> #methodTestEllipsisNode2.
+	pattern := { 
+		           ($* named: #ellipsis).
+		           100 } asMatcher.
+	pattern1 := { 
+		            (PTLEllipsisMatcher new named: #ellipsis).
+		            100 } asMatcher.
+	patternShortcut := { #'*ellipsis'. 100 } asMatcher.
+	pattern1Shortcut := { #'*ellipsis'. 100 } asMatcher.
+	model0 := { 100 }.
+	model1 := { 'klm'. 'jiop'. 'roger'. 100 }.
+	model2 := { 'klm'. 'patrick'. 'edgard' }.
 	matchResult := pattern match: model0.
 	matchResult1 := pattern1 match: model0.
 	self deny: (pattern match: model2) isMatch.
@@ -442,13 +390,12 @@ PTLPatternMatcherTest >> testEllipsisMatcher [
 PTLPatternMatcherTest >> testEllipsisMatcher2 [
 
 	| pattern model matcherResult |
-	pattern := RBSequenceNode suchAs: { (#statements -> { 
-			            (PTLJokerMatcher new named: #joker).
-			            ($* named: #before100).
-			            100.
-			            ($* named: #after100) }) } asMatcher.
-	model := self productFASTPharo:
-		         PTLPatternMatcherTest >> #methodTestEllipsisNode3.
+	pattern := { 
+		           (PTLJokerMatcher new named: #joker).
+		           ($* named: #before100).
+		           100.
+		           ($* named: #after100) } asMatcher.
+	model := { 1. 2. 3. 4. 6. 100. 42. 50. 26 }.
 	matcherResult := pattern match: model.
 	self assert: matcherResult isMatch.
 	self
@@ -507,37 +454,31 @@ PTLPatternMatcherTest >> testJoker3 [
 { #category : #tests }
 PTLPatternMatcherTest >> testJokerMatcher [
 
-	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut |
-	pattern := RBSequenceNode suchAs: { (#statements -> { 
-			            1.
-			            (PTLJokerMatcher new named: #joker) }) } asMatcher.
-	pattern1 := RBSequenceNode suchAs: { (#statements -> { 
-			             (PTLJokerMatcher new named: #joker).
-			             100 }) } asMatcher.
-	pattern2 := RBSequenceNode suchAs: { (#statements -> { 
-			             (PTLJokerMatcher new named: #first).
-			             $*.
-			             (PTLJokerMatcher new named: #last) }) } asMatcher.
-	pattern3 := RBSequenceNode suchAs: { (#statements -> { 
-			             PTLJokerMatcher new.
-			             2.
-			             99 }) } asMatcher.
-	patternShorcut := RBSequenceNode suchAs:
-		                  { (#statements -> { 1. #'@joker' }) } asMatcher.
-	pattern1Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #'@joker'. 100 }) } asMatcher.
-	pattern2Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #'@first'. #'*_'. #'@last' }) }
-			                   asMatcher.
-	pattern3Shorcut := RBSequenceNode suchAs:
-		                   { (#statements -> { #_. 2. 99 }) } asMatcher.
-	model := self productFASTPharo:
-		         PTLPatternMatcherTest >> #methodTestJoker.
-	model1 := self productFASTPharo:
-		          PTLPatternMatcherTest >> #methodTestJoker2.
-	matchResult := pattern match: model.
+	| pattern pattern1 pattern2 model model1 matchResult matchResult2 pattern3 patternShorcut pattern1Shorcut pattern2Shorcut pattern3Shorcut modelBis |
+	pattern := { 
+		           1.
+		           (PTLJokerMatcher new named: #joker) } asMatcher.
+	pattern1 := { 
+		            (PTLJokerMatcher new named: #joker) .
+		            100 }asMatcher.
+	pattern2 := { 
+		            (PTLJokerMatcher new named: #first).
+		            $*.
+		            (PTLJokerMatcher new named: #last) } asMatcher.
+	pattern3 := { 
+		            PTLJokerMatcher new.
+		            2.
+		            99 } asMatcher.
+	patternShorcut := { 1. #'@joker' } asMatcher.
+	pattern1Shorcut := { #'@joker'. 100 } asMatcher.
+	pattern2Shorcut := { #'@first'. #'*_'. #'@last' } asMatcher.
+	pattern3Shorcut := { #_. 2. 99 } asMatcher.
+	modelBis := { 1. 100 }.
+	model := { 1. 2. 3. 4. 5 }.
+	model1 := { 10. 100 }.
+	matchResult := pattern match: modelBis.
 	self assert: matchResult isMatch.
-	self assert: (matchResult at: #joker) value equals: 2.
+	self assert: (matchResult at: #joker) value equals: 100.
 	self deny: (pattern1 match: model) isMatch.
 	self deny: (pattern3 match: model) isMatch.
 	matchResult2 := pattern2 match: model.
@@ -547,9 +488,9 @@ PTLPatternMatcherTest >> testJokerMatcher [
 	self assert: ((pattern1 match: model1) at: #joker) value equals: 10.
 
 	"shorcutTest"
-	matchResult := patternShorcut match: model.
+	matchResult := patternShorcut match: modelBis.
 	self assert: matchResult isMatch.
-	self assert: (matchResult at: #joker) value equals: 2.
+	self assert: (matchResult at: #joker) value equals: 100.
 	self deny: (pattern1Shorcut match: model) isMatch.
 	self deny: (pattern3Shorcut match: model) isMatch.
 	matchResult2 := pattern2Shorcut match: model.
@@ -634,6 +575,25 @@ PTLPatternMatcherTest >> testMatchModelRefenceWithConfigurationMatcher2 [
 ]
 
 { #category : #tests }
+PTLPatternMatcherTest >> testMatchModelReference2 [
+
+	| pattern |
+	pattern := PTLTestClassA unique.
+	self assert: (pattern match: PTLTestClassA new) isMatch.
+	self deny: (pattern match: PTLTestClassB new) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testMatchModelReferenceShouldRaiseError [
+
+	| pattern |
+	pattern := PTLTestClassA suchAs: { (#klm -> 'klm') }.
+	self
+		should: [ pattern match: PTLTestClassA new ]
+		raise: PTLSelectorNotDefined
+]
+
+{ #category : #tests }
 PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 
 	| pattern model1 model2 |
@@ -653,10 +613,10 @@ PTLPatternMatcherTest >> testMatchModelReferenceWithNamedConfiguration [
 { #category : #tests }
 PTLPatternMatcherTest >> testMatchSavedAssociation [
 
-	| matchResult1 matchResult2 matchResult3 matcher | 
-	matcher := RBSequenceNode suchAs:
-		           { { (#statements
-		            -> ((RBReturnNode suchAs: { '4' }) named: #a)) } }
+	| matchResult1 matchResult2 matchResult3 matcher |
+	matcher := RBSequenceNode suchAs: { (#statements
+		            ->
+		            ((RBReturnNode suchAs: { (#value -> '4') }) named: #a)) }
 			           asMatcher.
 	matchResult1 := matcher match: (self productFASTPharo:
 			                 PTLPatternMatcherTest >> #methodTestReturnLiteral4).
@@ -675,25 +635,24 @@ PTLPatternMatcherTest >> testMatchSavedAssociation [
 PTLPatternMatcherTest >> testMatchTwoLastStatementOfASequence [
 
 	| pattern model matchResult pattern1 matchResult2 |
-	pattern := RBSequenceNode suchAs: { (#statements -> { 
-			            $*.
-			            (PTLJokerMatcher new named: #lastlast).
-			            (PTLJokerMatcher new named: #last) }) } asMatcher.
-	pattern1 := RBSequenceNode suchAs: { (#statements -> { 
-			             $*.
-			             (PTLJokerMatcher new named: #beforebefore50).
-			             (PTLJokerMatcher new named: #before50).
-			             50 }) } asMatcher.
-	model := self productFASTPharo:
-		         PTLPatternMatcherTest >> #methodTestEllipsisNode3.
+	pattern := { 
+		           $*.
+		           (PTLJokerMatcher new named: #lastlast).
+		           (PTLJokerMatcher new named: #last) } asMatcher.
+	pattern1 := { 
+		            $*.
+		            (PTLJokerMatcher new named: #beforebefore26).
+		            (PTLJokerMatcher new named: #before26).
+		           26 } asMatcher.
+	model := { 1. 2. 3. 4. 6. 100. 42. 50. 26 }.
 	matchResult := pattern match: model.
 	self assert: matchResult isMatch.
 	self assert: (matchResult at: #lastlast) value equals: 50.
 	self assert: (matchResult at: #last) value equals: 26.
 	matchResult2 := pattern1 match: model.
 	self assert: matchResult2 isMatch.
-	self assert: (matchResult2 at: #before50) value equals: 42.
-	self assert: (matchResult2 at: #beforebefore50) value equals: 100
+	self assert: (matchResult2 at: #before26) value equals: 50.
+	self assert: (matchResult2 at: #beforebefore26) value equals: 42
 ]
 
 { #category : #tests }
@@ -905,6 +864,19 @@ PTLPatternMatcherTest >> testSequenceMatcher2 [
 	self deny: (pattern match: model0) isMatch.
 	self assert: (pattern match: model1) isMatch.
 	self assert: (pattern match: model2) isMatch
+]
+
+{ #category : #tests }
+PTLPatternMatcherTest >> testSequenceMatcher3 [
+
+	| pattern model0 model1 model2 |
+	pattern := { 1 } asMatcher.
+	model0 := { 1 }.
+	model1 := { 1. 2 }.
+	model2 := { 2. 1 }.
+	self assert: (pattern match: model0) isMatch.
+	self deny: (pattern match: model1) isMatch.
+	self deny: (pattern match: model2) isMatch
 ]
 
 { #category : #tests }
