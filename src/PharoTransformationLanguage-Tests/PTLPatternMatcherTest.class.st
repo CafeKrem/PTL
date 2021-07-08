@@ -808,7 +808,7 @@ PTLPatternMatcherTest >> testSequenceMatcher [
 	pattern := RBSequenceNode suchAs: { (#statements -> { 
 			            (RBBlockNode named: #block).
 			            (100 named: #int).
-			            (RBLiteralNode named: #str) }) } asMatcher.
+			            (RBLiteralNode named: #str) }) }.
 
 	model0 := self productFASTPharo:
 		          PTLPatternMatcherTest >> #methodTestSequence.

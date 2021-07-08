@@ -95,6 +95,18 @@ PTLFastPharoPatternDSLTest >> testAssignMatcher [
 ]
 
 { #category : #tests }
+PTLFastPharoPatternDSLTest >> testBlockInstructionMatcher [
+
+	| pattern model |
+	pattern := [ 1 ] asFASTPharoInstructionMatcher.
+	model := (self importFrom:
+		          PTLFastPharoPatternDSLTest >> #methodTestAssign) collect:
+		         #expression.
+	self deny: (pattern match: model) isMatch.
+	self assert: (pattern match: model first) isMatch
+]
+
+{ #category : #tests }
 PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 
 	| model pattern modelFastPharo |
@@ -109,7 +121,7 @@ PTLFastPharoPatternDSLTest >> testLiteralAsMatcher [
 { #category : #tests }
 PTLFastPharoPatternDSLTest >> testMessageSendMatcher [
 
-	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult patternShortcut |
+	| pattern modelFastPharo patternModel modelFastPharo2 matcherResult |
 	patternModel := [ 
 	                [ 
 	                #'*beforeCond'.

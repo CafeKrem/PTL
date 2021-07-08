@@ -59,7 +59,7 @@ PTLMatcherModelReference >> configuration: aCollection [
 PTLMatcherModelReference >> hasMatch: aValue withContext: aContext [
 
 	| value |
-	value := self firstElementOf: aValue.(value isKindOf: modelDescription).
+	value := self firstElementOf: aValue.
 
 	^ (self compareValue: value)
 		  ifTrue: [ 

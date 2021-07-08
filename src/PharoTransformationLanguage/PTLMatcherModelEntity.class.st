@@ -135,6 +135,12 @@ PTLMatcherModelEntity >> isEllipsis [
 ]
 
 { #category : #testing }
+PTLMatcherModelEntity >> isInListMatcher [
+
+	^ next isNotNil or: [ previous isNotNil ]
+]
+
+{ #category : #testing }
 PTLMatcherModelEntity >> isJoker [
 	^ false
 ]
@@ -162,7 +168,7 @@ PTLMatcherModelEntity >> match: aValue [
 	| matcherResult |
 	matcherResult := PTLMatcherResult new.
 	matcherResult isMatch: (self
-			 match: aValue asOrderedCollection
+			 match: aValue asOrderedCollection copy
 			 withContext: matcherResult).
 	^ matcherResult
 ]
@@ -173,7 +179,12 @@ PTLMatcherModelEntity >> match: aCollection withContext: aContext [
 	"I'm defining a commun behavior for every matcher"
 
 	| value |
-	aCollection isCollection ifTrue: [ aCollection ifEmpty: [ ^ false ] ].
+	aCollection isCollection ifTrue: [ 
+		aCollection ifEmpty: [ ^ false ].
+		(self isInListMatcher not and: [ 
+			 aCollection size > 1 and: [ aCollection first isCharacter not ] ]) ifTrue: [ 
+			^ false ] ].
+
 	value := self firstElementOf: aCollection.
 	^ (self hasMatch: value withContext: aContext)
 		  ifTrue: [ 
