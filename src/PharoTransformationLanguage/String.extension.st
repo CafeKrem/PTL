@@ -10,12 +10,8 @@ String >> asMatcher [
 { #category : #'*PharoTransformationLanguage' }
 String >> asPTLPath [
 
-	| messages |
-	messages := (self splitOn: '>') collect: #trim.
-
-	^ PTLMatcherSubPattern new
-		  selectors: messages;
-		  yourself
+	(self includes: $>) ifTrue: [ ^ PTLSequencePath from: self ].
+	^ PTLPath from: self
 ]
 
 { #category : #'*PharoTransformationLanguage' }

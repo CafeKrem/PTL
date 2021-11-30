@@ -3,9 +3,8 @@ Extension { #name : #Class }
 { #category : #'*PharoTransformationLanguage' }
 Class >> asMatcher [
 
-	^ PTLMatcherModelReference
-		  withClass: self
-		  withConfiguration: OrderedCollection new
+	^ PTLObjectMatcher
+		  onClass: self
 ]
 
 { #category : #'*PharoTransformationLanguage' }
@@ -17,16 +16,14 @@ Class >> named: aString [
 ]
 
 { #category : #'*PharoTransformationLanguage' }
-Class >> suchAs: anObject [
+Class >> suchAs: anAssociationArray [
 
-	^ PTLMatcherModelReference
-		  withClass: self
-		  withConfiguration:
-			  ((anObject isCollection and: [ anObject isString not ])
-				   ifTrue: [ 
-				   (anObject collect: [ :each | each asMatcher ])
-					   asSubPatternWrapper ]
-				   ifFalse: [ { anObject asMatcher asSubPatternWrapper } ])
+	^ PTLObjectMatcher
+		  onClass: self
+		  withMatchers:
+		  (anAssociationArray do: [ :entry |
+					entry key: entry key asPTLPath.
+			   entry value: entry value asMatcher ])
 ]
 
 { #category : #'*PharoTransformationLanguage' }
@@ -38,7 +35,5 @@ Class >> suchAs: aCollection like: aFullBlockClosure [
 { #category : #'*PharoTransformationLanguage' }
 Class >> unique [
 
-	^ (PTLMatcherModelReference withClass: self withConfiguration: {  })
-		  matchOnlyThisClass: true;
-		  yourself
+	^ (PTLObjectMatcher onClass: self)
 ]

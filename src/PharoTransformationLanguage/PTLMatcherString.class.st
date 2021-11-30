@@ -27,15 +27,24 @@ PTLMatcherString class >> value: aCharacter [
 
 { #category : #'private-running' }
 PTLMatcherString >> hasMatch: aValue withContext: aContext [
-	^ (super hasMatch: aValue withContext: aContext)
-		or: [(aValue isString or: [ aValue isCharacter ])
-				ifTrue:
-					[ aValue asString beginsWithEmpty: value asString caseSensitive: true ]
-				ifFalse: [ aValue isCollection
-						ifTrue: [ ('' join: aValue)
-								beginsWithEmpty: value asString
-								caseSensitive: true ]
-						ifFalse: [ false ] ] ]
+
+	^ (super hasMatch: aValue withContext: aContext) or: [ 
+		  (aValue isString or: [ aValue isCharacter ])
+			  ifTrue: [ 
+				  value asString
+					  ifEmpty: [ true ]
+					  ifNotEmpty: [ 
+					  aValue asString beginsWith: value asString caseSensitive: true ] ]
+			  ifFalse: [ 
+				  aValue isCollection
+					  ifTrue: [ 
+						  value asString
+							  ifEmpty: [ true ]
+							  ifNotEmpty: [ 
+							  ('' join: aValue)
+								  beginsWith: value asString
+								  caseSensitive: true ] ]
+					  ifFalse: [ false ] ] ]
 ]
 
 { #category : #hook }
